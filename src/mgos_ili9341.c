@@ -134,26 +134,28 @@ static void ili9341_send_pixels(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
-#define FILLRECT_CHUNK 256
+#define ILI9341_FILLRECT_CHUNK 256
 static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h)
 {
   uint16_t *buf;
   uint32_t i;
   uint32_t todo_len;
   uint32_t buflen;
+  uint16_t color_htons;
 
   todo_len=w*h;
   if (todo_len == 0)
     return;
   
   // Allocate at most 2*FILLRECT_CHUNK bytes
-  buflen = (todo_len<FILLRECT_CHUNK?todo_len:FILLRECT_CHUNK);
+  buflen = (todo_len<ILI9341_FILLRECT_CHUNK?todo_len:ILI9341_FILLRECT_CHUNK);
 
   if (!(buf = calloc(buflen, sizeof(uint16_t))))
     return;
 
+  color_htons=htons(s_window.fg_color);
   for(i=0; i<buflen; i++) {
-    buf[i] = htons(s_window.fg_color);
+    buf[i] = color_htons;
   }
   ili9341_set_clip(x0, y0, x0+w-1, y0+h-1);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
