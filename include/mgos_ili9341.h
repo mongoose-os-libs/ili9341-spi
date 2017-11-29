@@ -47,5 +47,12 @@ void mgos_ili9341_drawRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h);
 void mgos_ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h);
 
 void mgos_ili9341_drawRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, uint16_t r);
+void mgos_ili9341_fillRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, uint16_t r);
+
+void mgos_ili9341_drawCircle(int16_t x0, int16_t y0, int radius);
+void mgos_ili9341_fillCircle(int16_t x0, int16_t y0, int radius);
+
+void mgos_ili9341_drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+void mgos_ili9341_fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 #endif // __MGOS_ILI9341_H
