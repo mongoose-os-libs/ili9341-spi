@@ -1,0 +1,25 @@
+author: Pim van Pelt <pim@ipng.nl>
+type: lib
+description: Mongoose-OS library for ILI9341
+version: 1.0
+
+sources:
+  - src
+
+includes:
+  - include
+
+config_schema:
+  - ["ili9341", "o", {title: "ILI9341 settings"}]
+  - ["ili9341.cs_pin", "i", 15, {title: "TFT CS pin"}]
+  - ["ili9341.dc_pin", "i", 33, {title: "TFT DC pin"}]
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/spi
+
+tags:
+  - c
+  - spi
+  - hw
+
+manifest_version: 2017-09-29
