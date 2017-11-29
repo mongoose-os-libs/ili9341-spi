@@ -28,6 +28,8 @@
 #define SPI_DEFAULT_FREQ         26000000
 #endif // SPI_DEFAULT_FREQ
 
+#define swap(a, b) { int16_t t = a; a = b; b = t; }
+
 // Externally callable functions:
 void mgos_ili9341_set_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void mgos_ili9341_set_fgcolor(uint8_t r, uint8_t g, uint8_t b);
