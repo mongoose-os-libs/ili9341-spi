@@ -27,7 +27,7 @@
 #define ILI9341_NORON         0x13
 
 #define ILI9341_INVOFF        0x20
-#define ILI9341_INVONN        0x21
+#define ILI9341_INVON         0x21
 
 #define ILI9341_GAMMASET      0x26
 #define ILI9341_DISPOFF       0x28

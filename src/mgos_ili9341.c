@@ -227,6 +227,14 @@ void mgos_ili9341_set_orientation(uint8_t flags) {
   return ili9341_set_orientation(flags);
 }
 
+void mgos_ili9341_set_inverted(bool inverted) {
+  if (inverted)
+    ili9341_spi_write8_cmd(ILI9341_INVON);
+  else
+    ili9341_spi_write8_cmd(ILI9341_INVOFF);
+}
+
+
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
 
@@ -508,6 +516,7 @@ void mgos_ili9341_drawPixel(uint16_t x0, uint16_t y0) {
 void mgos_ili9341_fillScreen() {
   return ili9341_fillRect(0, 0, s_screen_width, s_screen_height);
 }
+
 
 bool mgos_ili9341_spi_init(void) {
   // Setup CS pin

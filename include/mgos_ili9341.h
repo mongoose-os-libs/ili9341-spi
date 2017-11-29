@@ -37,6 +37,7 @@ void mgos_ili9341_set_fgcolor565(uint16_t rgb);
 void mgos_ili9341_set_bgcolor565(uint16_t rgb);
 void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height);
 void mgos_ili9341_set_orientation(uint8_t flags);
+void mgos_ili9341_set_inverted(bool inverted);
 
 void mgos_ili9341_fillScreen();
 
