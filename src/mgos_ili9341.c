@@ -32,9 +32,12 @@ static void ili9341_spi_write(const uint8_t *data, uint32_t size) {
       .cs = -1,
       .mode = SPI_MODE,
       .freq = SPI_SPEED,
-      .hd.tx_data = data,
-      .hd.tx_len = size,
   };
+  txn.hd.tx_data = data,
+  txn.hd.tx_len = size,
+  txn.hd.dummy_len = 0,
+  txn.hd.rx_len = 0,
+  txn.hd.rx_data = NULL,
   mgos_spi_run_txn(spi, false, &txn);
 }
 
