@@ -279,8 +279,70 @@ void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
   }
 }
 
+void mgos_ili9341_drawRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
+  mgos_ili9341_drawLine(x0, y0, x0+w-1, y0);
+  mgos_ili9341_drawLine(x0+w-1, y0, x0+w-1, y0+h-1);
+  mgos_ili9341_drawLine(x0, y0+h-1, x0+w-1, y0+h-1);
+  mgos_ili9341_drawLine(x0, y0, x0, y0+h-1);
+}
+
+
+static void ili9341_drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername)
+{
+  int16_t f = 1 - r;
+  int16_t ddF_x = 1;
+  int16_t ddF_y = -2 * r;
+  int16_t x = 0;
+  int16_t y = r;
+  
+  while (x < y) {
+    if (f >= 0) {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+    if (cornername & 0x4) {
+      ili9341_drawPixel(x0 + x, y0 + y);
+      ili9341_drawPixel(x0 + y, y0 + x);
+    }
+    if (cornername & 0x2) {
+      ili9341_drawPixel(x0 + x, y0 - y);
+      ili9341_drawPixel(x0 + y, y0 - x);
+    }
+    if (cornername & 0x8) {
+      ili9341_drawPixel(x0 - y, y0 + x);
+      ili9341_drawPixel(x0 - x, y0 + y);
+    }
+    if (cornername & 0x1) {
+      ili9341_drawPixel(x0 - y, y0 - x);
+      ili9341_drawPixel(x0 - x, y0 - y);
+    }
+  }
+}
+
+void mgos_ili9341_drawRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, uint16_t r) {
+  // smarter version
+  mgos_ili9341_drawLine(x0+r, y0, x0+w-r, y0);         // Top
+  mgos_ili9341_drawLine(x0+r, y0+h-1, x0+w-r, y0+h-1);       // Bottom
+  mgos_ili9341_drawLine(x0, y0+r, x0, y0+h-r);               // Left
+  mgos_ili9341_drawLine(x0+w-1, y0+r, x0+w-1, y0+h-r);       // Right
+
+  // draw four corners
+  ili9341_drawCircleHelper(x0+r, y0+r, r, 1);
+  ili9341_drawCircleHelper(x0+w-r-1, y0+r, r, 2);
+  ili9341_drawCircleHelper(x0+w-r-1, y0+h-r-1, r, 4);
+  ili9341_drawCircleHelper(x0+r, y0+h-r-1, r, 8);
+}
+
 void mgos_ili9341_set_orientation(uint8_t flags) {
   return ili9341_set_orientation(flags);
+}
+
+void mgos_ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
+  return ili9341_fillRect(x0, y0, w, h);
 }
 
 void mgos_ili9341_drawPixel(uint16_t x0, uint16_t y0) {
