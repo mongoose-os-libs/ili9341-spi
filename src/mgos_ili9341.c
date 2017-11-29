@@ -221,6 +221,10 @@ void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height) {
   s_screen_height = height;
 }
 
+void mgos_ili9341_set_orientation(uint8_t flags) {
+  return ili9341_set_orientation(flags);
+}
+
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
 
@@ -326,21 +330,17 @@ static void ili9341_drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t 
 }
 
 void mgos_ili9341_drawRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, uint16_t r) {
-  // smarter version
+  // draw the straight edges
   mgos_ili9341_drawLine(x0+r, y0, x0+w-r, y0);         // Top
-  mgos_ili9341_drawLine(x0+r, y0+h-1, x0+w-r, y0+h-1);       // Bottom
-  mgos_ili9341_drawLine(x0, y0+r, x0, y0+h-r);               // Left
-  mgos_ili9341_drawLine(x0+w-1, y0+r, x0+w-1, y0+h-r);       // Right
+  mgos_ili9341_drawLine(x0+r, y0+h-1, x0+w-r, y0+h-1); // Bottom
+  mgos_ili9341_drawLine(x0, y0+r, x0, y0+h-r);         // Left
+  mgos_ili9341_drawLine(x0+w-1, y0+r, x0+w-1, y0+h-r); // Right
 
   // draw four corners
-  ili9341_drawCircleHelper(x0+r, y0+r, r, 1);
-  ili9341_drawCircleHelper(x0+w-r-1, y0+r, r, 2);
-  ili9341_drawCircleHelper(x0+w-r-1, y0+h-r-1, r, 4);
-  ili9341_drawCircleHelper(x0+r, y0+h-r-1, r, 8);
-}
-
-void mgos_ili9341_set_orientation(uint8_t flags) {
-  return ili9341_set_orientation(flags);
+  ili9341_drawCircleHelper(x0+r, y0+r, r, 1);          // Top Left
+  ili9341_drawCircleHelper(x0+w-r-1, y0+r, r, 2);      // Top Right
+  ili9341_drawCircleHelper(x0+r, y0+h-r-1, r, 8);      // Bottom Left
+  ili9341_drawCircleHelper(x0+w-r-1, y0+h-r-1, r, 4);  // Bottom Right
 }
 
 void mgos_ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
