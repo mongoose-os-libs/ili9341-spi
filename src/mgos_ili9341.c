@@ -11,8 +11,8 @@ struct ili9341_window {
   uint16_t x1;
   uint16_t y0;
   uint16_t y1;
-  uint16_t fg_color;
-  uint16_t bg_color;
+  uint16_t fg_color; // in network byte order
+  uint16_t bg_color; // in network byte order
 };
 
 static uint16_t s_screen_width = 240;
@@ -137,13 +137,11 @@ static void ili9341_send_pixels(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 */
 
 #define ILI9341_FILLRECT_CHUNK 256
-static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h)
-{
+static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
   uint16_t *buf;
   uint32_t i;
   uint32_t todo_len;
   uint32_t buflen;
-  uint16_t color_htons;
 
   todo_len=w*h;
   if (todo_len == 0)
@@ -155,9 +153,8 @@ static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h)
   if (!(buf = calloc(buflen, sizeof(uint16_t))))
     return;
 
-  color_htons=htons(s_window.fg_color);
   for(i=0; i<buflen; i++) {
-    buf[i] = color_htons;
+    buf[i] = s_window.fg_color;
   }
   ili9341_set_clip(x0, y0, x0+w-1, y0+h-1);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
@@ -177,13 +174,10 @@ static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h)
 }
 
 static void ili9341_drawPixel(uint16_t x0, uint16_t y0) {
-  uint16_t pixel_color;
-
-  pixel_color = htons(s_window.fg_color);
   ili9341_set_clip(x0, y0, x0+1, y0+1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
-  ili9341_spi_write((uint8_t *)&pixel_color, 2);
+  ili9341_spi_write((uint8_t *)&s_window.fg_color, 2);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
@@ -203,19 +197,19 @@ void mgos_ili9341_set_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 }
 
 void mgos_ili9341_set_fgcolor(uint8_t r, uint8_t g, uint8_t b) {
-  s_window.fg_color=mgos_ili9341_color565(r, g, b);
+  s_window.fg_color=htons(mgos_ili9341_color565(r, g, b));
 }
 
 void mgos_ili9341_set_bgcolor(uint8_t r, uint8_t g, uint8_t b) {
-  s_window.bg_color=mgos_ili9341_color565(r, g, b);
+  s_window.bg_color=htons(mgos_ili9341_color565(r, g, b));
 }
 
 void mgos_ili9341_set_fgcolor565(uint16_t rgb) {
-  s_window.fg_color=rgb;
+  s_window.fg_color=htons(rgb);
 }
 
 void mgos_ili9341_set_bgcolor565(uint16_t rgb) {
-  s_window.bg_color=rgb;
+  s_window.bg_color=htons(rgb);
 }
 
 void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height) {
