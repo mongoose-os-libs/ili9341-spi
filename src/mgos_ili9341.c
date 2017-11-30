@@ -325,7 +325,15 @@ void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
 }
 
 void mgos_ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
-  return ili9341_fillRect(x0, y0, w, h);
+  if (x0+s_window.x0>s_window.x1)
+    return;
+  if (y0+s_window.y0>s_window.y1)
+    return;
+  if (x0+s_window.x0+w>s_window.x1)
+    w=s_window.x1-s_window.x0-x0;
+  if (y0+s_window.y0+h>s_window.y1)
+    h=s_window.y1-s_window.y0-y0;
+  return ili9341_fillRect(s_window.x0+x0, s_window.y0+y0, w, h);
 }
 
 void mgos_ili9341_drawPixel(uint16_t x0, uint16_t y0) {
