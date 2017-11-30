@@ -183,7 +183,14 @@ static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
 }
 
 static void ili9341_drawPixel(uint16_t x0, uint16_t y0) {
-  ili9341_set_clip(x0, y0, x0+1, y0+1);
+//  LOG(LL_DEBUG, ("Pixel [%d,%d] Window [%d,%d]-[%d,%d]", x0, y0, s_window.x0, s_window.y0, s_window.x1, s_window.y1));
+  if (x0+s_window.x0>s_window.x1) {
+    return;
+  }
+  if (y0+s_window.y0>s_window.y1) {
+    return;
+  }
+  ili9341_set_clip(x0+s_window.x0, y0+s_window.x0, x0+1, y0+1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
   ili9341_spi_write((uint8_t *)&s_window.fg_color, 2);
