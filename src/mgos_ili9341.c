@@ -252,7 +252,7 @@ void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
   // Vertical line
   if (x0==x1) {
     if (y1<y0) swap(y0, y1);
-    if (y0+s_window.y0>s_window.y1) {
+    if (y0+s_window.y0>s_window.y1 || x0+s_window.x0>s_window.x1) {
 //      LOG(LL_DEBUG, ("VLINE [%d,%d] length %d starts outside of window", x0, y0, y1));
       return;
     }
@@ -267,7 +267,7 @@ void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
   // Horizontal line
   if (y0==y1) {
     if (x1<x0) swap(x0, x1);
-    if (x0+s_window.x0>s_window.x1) {
+    if (x0+s_window.x0>s_window.x1 || y0+s_window.y0>s_window.y1) {
 //      LOG(LL_DEBUG, ("HLINE [%d,%d] length %d starts outside of window", x0, y0, y1));
       return;
     }
