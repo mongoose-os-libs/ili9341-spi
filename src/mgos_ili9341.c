@@ -249,17 +249,34 @@ void mgos_ili9341_set_inverted(bool inverted) {
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-
   // Vertical line
   if (x0==x1) {
-    if (y1>y0) return ili9341_fillRect(x0, y0, 1, y1-y0);
-    else return ili9341_fillRect(x0, y1, 1, y0-y1);
+    if (y1<y0) swap(y0, y1);
+    if (y0+s_window.y0>s_window.y1) {
+//      LOG(LL_DEBUG, ("VLINE [%d,%d] length %d starts outside of window", x0, y0, y1));
+      return;
+    }
+//    LOG(LL_DEBUG, ("VLINE [%d,%d]-[%d,%d] window [%d,%d]-[%d,%d]", x0, y0, x1, y1, s_window.x0, s_window.y0, s_window.x1, s_window.y1));
+    if (y1+s_window.y0>s_window.y1) {
+//      LOG(LL_DEBUG, ("VLINE [%d,%d] length %d ends outside of window, clipping it", x0, y0, y1-y0));
+      y1=s_window.y1-s_window.y0;
+    }
+    return ili9341_fillRect(s_window.x0+x0, s_window.y0+y0, 1, y1-y0);
   }
 
   // Horizontal line
   if (y0==y1) {
-    if (x1>x0) return ili9341_fillRect(x0, y0, x1-x0, 1);
-    else return ili9341_fillRect(x1, y0, x0-x1, 1);
+    if (x1<x0) swap(x0, x1);
+    if (x0+s_window.x0>s_window.x1) {
+//      LOG(LL_DEBUG, ("HLINE [%d,%d] length %d starts outside of window", x0, y0, y1));
+      return;
+    }
+//    LOG(LL_DEBUG, ("HLINE [%d,%d]-[%d,%d] window [%d,%d]-[%d,%d]", x0, y0, x1, y1, s_window.x0, s_window.y0, s_window.x1, s_window.y1));
+    if (x1+s_window.x0>s_window.x1) {
+//      LOG(LL_DEBUG, ("HLINE [%d,%d] length %d ends outside of window, clipping it", x0, y0, x1-x0));
+      x1=s_window.x1-s_window.x0;
+    }
+    return ili9341_fillRect(s_window.x0+x0, s_window.y0+y0, x1-x0, 1);
   }
 
   int steep = 0;
