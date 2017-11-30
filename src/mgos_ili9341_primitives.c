@@ -52,8 +52,12 @@ static void ili9341_fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t 
 
   while (x < y) {
     if (f >= 0) {
-      if (cornername & 0x1) mgos_ili9341_drawLine(x0+y, y0-x, x0+y, y0-x+2*x+1+delta);
-      if (cornername & 0x2) mgos_ili9341_drawLine(x0-y, y0-x, x0-y, y0-x+2*x+1+delta);
+      if (cornername & 0x1) {
+        mgos_ili9341_drawLine(x0+y>0?x0+y:0, y0-x>0?y0-x:0, x0+y>0?x0+y:0, y0-x+2*x+1+delta);
+      }
+      if (cornername & 0x2) {
+        mgos_ili9341_drawLine(x0-y>0?x0-y:0, y0-x>0?y0-x:0, x0-y>0?x0-y:0, y0-x+2*x+1+delta);
+      }
       ylm = x0 - y;
       y--;
       ddF_y += 2;
@@ -64,8 +68,12 @@ static void ili9341_fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t 
     f += ddF_x;
 
     if ((x0 - x) > ylm) {
-      if (cornername & 0x1) mgos_ili9341_drawLine(x0+x, y0-y, x0+x, y0-y+2*y+1+delta);
-      if (cornername & 0x2) mgos_ili9341_drawLine(x0-x, y0-y, x0-x, y0-y+2*y+1+delta);
+      if (cornername & 0x1) {
+        mgos_ili9341_drawLine(x0+x>0?x0+x:0, y0-y>0?y0-y:0, x0+x>0?x0+x:0, y0-y+2*y+1+delta);
+      }
+      if (cornername & 0x2) {
+        mgos_ili9341_drawLine(x0-x>0?x0-x:0, y0-y>0?y0-y:0, x0-x>0?x0-x:0, y0-y+2*y+1+delta);
+      }
     }
   }
 }
@@ -102,7 +110,7 @@ void mgos_ili9341_drawCircle(int16_t x, int16_t y, int radius) {
 }
 
 void mgos_ili9341_fillCircle(int16_t x0, int16_t y0, int radius) {
-  mgos_ili9341_drawLine(x0, y0-radius, x0, y0+radius+1);
+  mgos_ili9341_drawLine(x0, y0-radius>0?y0-radius:0, x0, y0+radius+1);
   ili9341_fillCircleHelper(x0, y0, radius, 3, 0);
 }
 
