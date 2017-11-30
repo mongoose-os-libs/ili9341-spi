@@ -1,9 +1,9 @@
 #include "mgos_ili9341.h"
 #include "mgos_ili9341_hal.h"
+#include "mgos_ili9341_font.h"
 #include "mgos_config.h"
 #include "mgos_gpio.h"
 
-#define SPI_SPEED 20000000
 #define SPI_MODE 0
 
 struct ili9341_window {
@@ -31,7 +31,7 @@ static void ili9341_spi_write(const uint8_t *data, uint32_t size) {
   struct mgos_spi_txn txn = {
       .cs = -1,
       .mode = SPI_MODE,
-      .freq = SPI_SPEED,
+      .freq = SPI_DEFAULT_FREQ,
   };
   txn.hd.tx_data = data,
   txn.hd.tx_len = size,
@@ -100,9 +100,11 @@ static void ili9341_set_orientation(uint8_t flags) {
 
   if (flags & ILI9341_SWITCH_XY) {
     mgos_ili9341_set_dimensions(320, 240);
+    mgos_ili9341_set_window(0, 0, 319, 239);
     madctl |= 1 << 5;
   } else {
     mgos_ili9341_set_dimensions(240, 320);
+    mgos_ili9341_set_window(0, 0, 239, 319);
   }
 
   ili9341_spi_write8_cmd(ILI9341_MADCTL);
@@ -124,20 +126,23 @@ static void ili9341_set_clip(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
   return;
 }
 
-// buf is a 16-bit RGB 565 color buffer of length len*2 bytes (so len pixels).
+// buf represents a 16-bit RGB 565 uint16_t color buffer of length buflen bytes (so buflen/2 pixels).
 // Note: data in 'buf' has to be in network byte order!
-/* TODO(pim): Implement later!
-static void ili9341_send_pixels(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buf, uint32_t len)
-{
-  ili9341_set_clip(x0, y0, x1, y1);
+static void ili9341_send_pixels(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buf, uint32_t buflen) {
+  uint16_t winsize=(x1-x0+1)*(y1-y0+1);
 
+  if (buflen != winsize*2) {
+    LOG(LL_ERROR, ("Want buflen(%d), to be twice the window size(%d)", buflen, winsize));
+    return;
+  }
+
+  ili9341_set_clip(x0, y0, x1, y1);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
-  ili9341_spi_write(buf, len*2);
+  ili9341_spi_write(buf, buflen);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
-*/
 
 #define ILI9341_FILLRECT_CHUNK 256
 static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
@@ -159,6 +164,7 @@ static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
   for(i=0; i<buflen; i++) {
     buf[i] = s_window.fg_color;
   }
+
   ili9341_set_clip(x0, y0, x0+w-1, y0+h-1);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
@@ -193,6 +199,8 @@ uint16_t mgos_ili9341_color565(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 void mgos_ili9341_set_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+  if (x0>x1) swap(x0, x1);
+  if (y0>y1) swap(y0, y1);
   s_window.x0 = x0;
   s_window.x1 = x1;
   s_window.y0 = y0;
@@ -304,6 +312,41 @@ void mgos_ili9341_fillScreen() {
   return ili9341_fillRect(0, 0, s_screen_width, s_screen_height);
 }
 
+void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
+  uint16_t pixelline_width=0;
+  uint16_t *pixelline;
+  uint16_t lines;
+
+  pixelline_width = mgos_ili9341_getStringWidth(string);
+  if (pixelline_width==0) {
+    LOG(LL_ERROR, ("getStringWidth returned 0 -- is the font set?"));
+    return;
+  }
+
+  lines = mgos_ili9341_getStringHeight(string);
+  if (lines==0) {
+    LOG(LL_ERROR, ("getStringHeight returned 0 -- is the font set?"));
+    return;
+  }
+  LOG(LL_DEBUG, ("string='%s' at (%d,%d), width=%u height=%u", string, x0, y0, pixelline_width, lines));
+
+  pixelline = calloc(pixelline_width, sizeof(uint16_t));
+  if (!pixelline) {
+    LOG(LL_ERROR, ("could not malloc for string='%s' at (%d,%d), width=%u height=%u", string, x0, y0, pixelline_width, lines));
+    return;
+  }
+
+  for (int line=0; line<mgos_ili9341_getStringHeight(string); line++) {
+    int ret;
+    for (int i=0; i<pixelline_width; i++)
+      pixelline[i]=s_window.bg_color;
+    ret = ili9341_print_fillPixelLine(string, line, pixelline, s_window.fg_color);
+    if (ret != pixelline_width)
+      LOG(LL_ERROR, ("ili9341_getStringPixelLine returned %d, but we expected %d", ret, pixelline_width));
+//    printBuffer(pixelline_width, 1, pixelline);
+      ili9341_send_pixels(x0, y0+line, x0+pixelline_width-1, y0+line, (uint8_t *)pixelline, pixelline_width*sizeof(uint16_t));
+  }
+}
 
 bool mgos_ili9341_spi_init(void) {
   // Setup CS pin
@@ -314,10 +357,10 @@ bool mgos_ili9341_spi_init(void) {
   mgos_gpio_set_mode(mgos_sys_config_get_ili9341_dc_pin(), MGOS_GPIO_MODE_OUTPUT);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 0);
 
-  LOG(LL_INFO, ("init (CS: %d, DC: %d, MODE: %d, FREQ: %d)", mgos_sys_config_get_ili9341_cs_pin(), mgos_sys_config_get_ili9341_dc_pin(), SPI_MODE, SPI_SPEED));
+  LOG(LL_INFO, ("init (CS: %d, DC: %d, MODE: %d, FREQ: %d)", mgos_sys_config_get_ili9341_cs_pin(), mgos_sys_config_get_ili9341_dc_pin(), SPI_MODE, SPI_DEFAULT_FREQ));
   ili9341_commandList(ILI9341_init); 
 
-  ili9341_set_orientation(ILI9341_SWITCH_XY | ILI9341_FLIP_X);
+  mgos_ili9341_set_orientation(ILI9341_SWITCH_XY | ILI9341_FLIP_X);
 
   ili9341_spi_write8_cmd(ILI9341_DISPON); //Display on
 

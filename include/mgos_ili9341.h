@@ -2,6 +2,7 @@
 #define __MGOS_ILI9341_H
 
 #include "mgos.h"
+#include "mgos_ili9341_font.h"
 
 // Color definitions for RGB in 565-format
 #define ILI9341_BLACK       0x0000      /*   0,   0,   0 */
@@ -25,7 +26,7 @@
 #define ILI9341_PINK        0xF81F
 
 #ifndef SPI_DEFAULT_FREQ
-#define SPI_DEFAULT_FREQ         26000000
+#define SPI_DEFAULT_FREQ         20000000
 #endif // SPI_DEFAULT_FREQ
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
@@ -43,6 +44,7 @@ void mgos_ili9341_set_inverted(bool inverted);
 
 void mgos_ili9341_fillScreen();
 
+// Geometric shapes:
 void mgos_ili9341_drawPixel(uint16_t x0, uint16_t y0);
 void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
@@ -57,5 +59,12 @@ void mgos_ili9341_fillCircle(int16_t x0, int16_t y0, int radius);
 
 void mgos_ili9341_drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 void mgos_ili9341_fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+
+// Fonts and Printing:
+bool mgos_ili9341_set_font(GFXfont *f);
+void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *s);
+uint16_t mgos_ili9341_getStringWidth(char *string);
+uint16_t mgos_ili9341_getStringHeight(char *string);
+
 
 #endif // __MGOS_ILI9341_H
