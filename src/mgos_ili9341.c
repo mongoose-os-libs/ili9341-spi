@@ -131,16 +131,28 @@ static void ili9341_set_clip(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 static void ili9341_send_pixels(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buf, uint32_t buflen) {
   uint16_t winsize=(x1-x0+1)*(y1-y0+1);
 
+  if (y0+s_window.y0>s_window.y1 || x0+s_window.x0>s_window.x1) {
+    return;
+  }
+  if (y1+s_window.y0>s_window.y1) {
+    y1=s_window.y1-s_window.y0;
+  }
+  if (x1+s_window.x0>s_window.x1) {
+    x1=s_window.x1-s_window.x0;
+  }
+
   if (buflen != winsize*2) {
     LOG(LL_ERROR, ("Want buflen(%d), to be twice the window size(%d)", buflen, winsize));
     return;
   }
 
-  ili9341_set_clip(x0, y0, x1, y1);
+  winsize=(x1-x0+1)*(y1-y0+1);
+
+  ili9341_set_clip(x0+s_window.x0, y0+s_window.y0, x1+s_window.x0, y1+s_window.y0);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
-  ili9341_spi_write(buf, buflen);
+  ili9341_spi_write(buf, winsize*2);
   mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
@@ -375,7 +387,6 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
     ret = ili9341_print_fillPixelLine(string, line, pixelline, s_window.fg_color);
     if (ret != pixelline_width)
       LOG(LL_ERROR, ("ili9341_getStringPixelLine returned %d, but we expected %d", ret, pixelline_width));
-//    printBuffer(pixelline_width, 1, pixelline);
       ili9341_send_pixels(x0, y0+line, x0+pixelline_width-1, y0+line, (uint8_t *)pixelline, pixelline_width*sizeof(uint16_t));
   }
 }
