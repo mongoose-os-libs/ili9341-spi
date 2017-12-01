@@ -391,6 +391,14 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
   }
 }
 
+uint16_t mgos_ili9341_get_screenWidth() {
+  return s_window.width;
+}
+
+uint16_t mgos_ili9341_get_screenHeight() {
+  return s_window.height;
+}
+
 bool mgos_ili9341_spi_init(void) {
   // Setup CS pin
   mgos_gpio_set_mode(mgos_sys_config_get_ili9341_cs_pin(), MGOS_GPIO_MODE_OUTPUT);
