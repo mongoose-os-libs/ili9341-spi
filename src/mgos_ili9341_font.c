@@ -144,13 +144,16 @@ uint16_t mgos_ili9341_getStringWidth(char *string) {
 }
 
 bool mgos_ili9341_set_font(GFXfont *f) {
-  bool ret;
+  if (s_font_type == GFXFONT_FILE && s_font) free(s_font);
 
-  ret = ili9341_analyzeFont(f);
-  if (ret) {
-    if (s_font_type == GFXFONT_FILE) free(s_font);
-    s_font_type = GFXFONT_INTERNAL;
+  if (!f) {
+    s_font_type = GFXFONT_NONE;
     s_font = f;
+    return false;
   }
-  return ret;
+  if (f->font_width==0 && f->font_height==0)
+    ili9341_analyzeFont(f);
+  s_font = f;
+  s_font_type = GFXFONT_INTERNAL;
+  return true;
 }
