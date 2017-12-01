@@ -95,6 +95,28 @@ exit:
 }
 
 int main(int argc, char **argv, char **env) {
+  char *i_value = NULL;
+  char *o_value = NULL;
+  int c;
 
-  return png2dif("data/mongoose-os.png", "data/mongoose-os.dif");
+  opterr = 0;
+
+  while ((c = getopt (argc, argv, "i:o:")) != -1) {
+    switch (c) {
+      case 'i':
+        i_value = optarg;
+        break;
+      case 'o':
+        o_value = optarg;
+        break;
+      default:
+        abort ();
+    }
+  }
+  if (!i_value || !o_value) {
+    printf("Usage: -i <input.png> -o <output.dif>\r\n");
+    return -1;
+  }
+
+  return png2dif(i_value, o_value);
 }
