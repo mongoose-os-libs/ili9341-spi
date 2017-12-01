@@ -400,6 +400,45 @@ uint16_t mgos_ili9341_get_screenHeight() {
   return s_screen_height;
 }
 
+void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn) {
+  uint16_t *pixelline = NULL;
+  uint8_t dif_hdr[16];
+  uint32_t w, h;
+  int fd;
+  
+  fd = open(fn, O_RDONLY);
+  if (!fd) {
+    LOG(LL_ERROR, ("%s: Could not opens", fn));
+    goto exit;
+  } 
+  if (16 != read(fd, dif_hdr, 16)) {
+    LOG(LL_ERROR, ("%s: Could not read DIF header", fn));
+    goto exit;
+  }
+  if (dif_hdr[0] != 'D' || dif_hdr[1] != 'I' || dif_hdr[2] != 'F' || dif_hdr[3] != ILI9341_DIF_RGB16) {
+    LOG(LL_ERROR, ("%s: Invalid DIF header", fn));
+    goto exit;
+  }
+  w=dif_hdr[7] + (dif_hdr[6]<<8) + (dif_hdr[5]<<16) + (dif_hdr[4]<<24);
+  h=dif_hdr[11] + (dif_hdr[10]<<8) + (dif_hdr[9]<<16) + (dif_hdr[8]<<24);
+  LOG(LL_INFO, ("%s: width=%d height=%d", fn, w, h));
+  pixelline = calloc(w, sizeof(uint16_t));
+
+  for(int yy=0; yy<h; yy++) {
+    if (w*2 != read(fd, pixelline, w*2)) {
+      LOG(LL_ERROR, ("%s: short read", fn));
+      goto exit;
+    }
+    ili9341_send_pixels(x0, y0+yy, x0+w-1, y0+yy, (uint8_t *)pixelline, w*sizeof(uint16_t));
+    if (y0+yy>s_window.y1)
+      break;
+  }
+  
+exit:
+  if (pixelline) free(pixelline);
+  close(fd);
+}
+
 bool mgos_ili9341_spi_init(void) {
   // Setup CS pin
   mgos_gpio_set_mode(mgos_sys_config_get_ili9341_cs_pin(), MGOS_GPIO_MODE_OUTPUT);

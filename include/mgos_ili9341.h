@@ -68,5 +68,8 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *s);
 uint16_t mgos_ili9341_getStringWidth(char *string);
 uint16_t mgos_ili9341_getStringHeight(char *string);
 
+// Images
+void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn);
+
 
 #endif // __MGOS_ILI9341_H
