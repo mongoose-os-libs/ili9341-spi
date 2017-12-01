@@ -389,6 +389,7 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
       LOG(LL_ERROR, ("ili9341_getStringPixelLine returned %d, but we expected %d", ret, pixelline_width));
       ili9341_send_pixels(x0, y0+line, x0+pixelline_width-1, y0+line, (uint8_t *)pixelline, pixelline_width*sizeof(uint16_t));
   }
+  free(pixelline);
 }
 
 uint16_t mgos_ili9341_get_screenWidth() {
