@@ -415,13 +415,13 @@ void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn) {
     LOG(LL_ERROR, ("%s: Could not read DIF header", fn));
     goto exit;
   }
-  if (dif_hdr[0] != 'D' || dif_hdr[1] != 'I' || dif_hdr[2] != 'F' || dif_hdr[3] != ILI9341_DIF_RGB16) {
+  if (dif_hdr[0] != 'D' || dif_hdr[1] != 'I' || dif_hdr[2] != 'F' || dif_hdr[3] != 1) {
     LOG(LL_ERROR, ("%s: Invalid DIF header", fn));
     goto exit;
   }
   w=dif_hdr[7] + (dif_hdr[6]<<8) + (dif_hdr[5]<<16) + (dif_hdr[4]<<24);
   h=dif_hdr[11] + (dif_hdr[10]<<8) + (dif_hdr[9]<<16) + (dif_hdr[8]<<24);
-  LOG(LL_INFO, ("%s: width=%d height=%d", fn, w, h));
+  LOG(LL_DEBUG, ("%s: width=%d height=%d", fn, w, h));
   pixelline = calloc(w, sizeof(uint16_t));
 
   for(int yy=0; yy<h; yy++) {
