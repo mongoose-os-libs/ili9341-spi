@@ -50,7 +50,7 @@ uint16_t ili9341_print_fillPixelLine(char *string, uint8_t line, uint16_t *buf, 
   bitmap = s_font->bitmap;
 
 //  LOG(LL_DEBUG, ("Line %d of string '%s'", line, string));
-  for (int i=0; i<strlen(string); i++) {
+  for (uint16_t i=0; i<strlen(string); i++) {
     if(string[i]<s_font->first || string[i]>s_font->last) {
       LOG(LL_DEBUG, ("String character 0x%02x is not in font, replacing with ' '", i));
       string[i]=' ';
@@ -118,7 +118,7 @@ uint16_t mgos_ili9341_getStringWidth(char *string) {
   if (!s_font || !string)
     return 0;
 
-  for (int i=0; i<strlen(string); i++) {
+  for (uint16_t i=0; i<strlen(string); i++) {
     if(string[i]<s_font->first || string[i]>s_font->last) {
       LOG(LL_WARN, ("String character 0x%02x is not in font, replacing with ' '", i));
       string[i]=' ';
