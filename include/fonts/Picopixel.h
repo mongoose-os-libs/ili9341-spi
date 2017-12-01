@@ -1,3 +1,5 @@
+#ifndef __FONT_PICOPIXEL_H
+#define __FONT_PICOPIXEL_H
 // Picopixel by Sebastian Weber.  A tiny font
 // with all characters within a 6 pixel height.
 
@@ -121,3 +123,4 @@ GFXfont Picopixel = {
   0x20, 0x7E, 7, 0, 0, 0, 0 };
 
 // Approx. 852 bytes
+#endif // __FONT_PICOPIXEL_H

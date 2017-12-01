@@ -1,3 +1,5 @@
+#ifndef __FONT_TOMTHUMB_H
+#define __FONT_TOMTHUMB_H
 /**
 ** The original 3x5 font is licensed under the 3-clause BSD license:
 **
@@ -472,3 +474,4 @@ GFXfont TomThumb = {
   (uint8_t  *)TomThumbBitmaps,
   (GFXglyph *)TomThumbGlyphs,
   0x20, 0x7E, 6, 0, 0, 0, 0 };
+#endif // __FONT_TOMTHUMB_H
