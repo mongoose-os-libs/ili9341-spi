@@ -392,11 +392,11 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
 }
 
 uint16_t mgos_ili9341_get_screenWidth() {
-  return s_window.width;
+  return s_screen_width;
 }
 
 uint16_t mgos_ili9341_get_screenHeight() {
-  return s_window.height;
+  return s_screen_height;
 }
 
 bool mgos_ili9341_spi_init(void) {
