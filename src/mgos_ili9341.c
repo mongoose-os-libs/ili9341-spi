@@ -3,6 +3,7 @@
 #include "mgos_ili9341_font.h"
 #include "mgos_config.h"
 #include "mgos_gpio.h"
+#include <unistd.h>
 
 #define SPI_MODE 0
 
@@ -424,8 +425,8 @@ void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn) {
   LOG(LL_DEBUG, ("%s: width=%d height=%d", fn, w, h));
   pixelline = calloc(w, sizeof(uint16_t));
 
-  for(int yy=0; yy<h; yy++) {
-    if (w*2 != read(fd, pixelline, w*2)) {
+  for(uint16_t yy=0; yy<h; yy++) {
+    if (w*2 != (uint16_t) read(fd, pixelline, w*2)) {
       LOG(LL_ERROR, ("%s: short read", fn));
       goto exit;
     }
