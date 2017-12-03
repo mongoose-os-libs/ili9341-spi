@@ -11,7 +11,7 @@ includes:
 
 config_schema:
   - ["ili9341", "o", {title: "ILI9341 settings"}]
-  - ["ili9341.cs_pin", "i", 15, {title: "TFT CS pin"}]
+  - ["ili9341.cs_index", "i", 0, {title: "SPI cs*_gpio index [0..2]"}]
   - ["ili9341.dc_pin", "i", 33, {title: "TFT DC pin"}]
 
 libs:

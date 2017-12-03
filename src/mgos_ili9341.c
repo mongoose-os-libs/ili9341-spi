@@ -30,7 +30,7 @@ static void ili9341_spi_write(const uint8_t *data, uint32_t size) {
   }
 
   struct mgos_spi_txn txn = {
-      .cs = -1,
+      .cs = mgos_sys_config_get_ili9341_cs_index(),
       .mode = SPI_MODE,
       .freq = SPI_DEFAULT_FREQ,
   };
@@ -45,17 +45,13 @@ static void ili9341_spi_write(const uint8_t *data, uint32_t size) {
 static void ili9341_spi_write8_cmd(uint8_t byte) {
   // Command has DC low and CS low while writing to SPI bus.
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 0);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
   ili9341_spi_write(&byte, 1);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
 static void ili9341_spi_write8(uint8_t byte) {
   // Data has DC high and CS low while writing to SPI bus.
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
   ili9341_spi_write(&byte, 1);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
 // ILI9341 Primitives -- these methods call SPI commands directly,
@@ -72,14 +68,10 @@ static void ili9341_commandList(const uint8_t *addr) {
     numArgs &= ~ILI9341_DELAY;                          // Mask out delay bit
 
     mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 0);
-    mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
     ili9341_spi_write(&cmd, 1);
-    mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 
     mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
-    mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
     ili9341_spi_write((uint8_t *)addr, numArgs);
-    mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
     addr += numArgs;
 
     if(ms) {
@@ -152,9 +144,7 @@ static void ili9341_send_pixels(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
   ili9341_set_clip(x0+s_window.x0, y0+s_window.y0, x1+s_window.x0, y1+s_window.y0);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
   ili9341_spi_write(buf, winsize*2);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
 #define ILI9341_FILLRECT_CHUNK 256
@@ -181,7 +171,6 @@ static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
   ili9341_set_clip(x0, y0, x0+w-1, y0+h-1);
   ili9341_spi_write8_cmd(ILI9341_RAMWR);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
   while (todo_len) {
     if (todo_len >= buflen) {
       ili9341_spi_write((uint8_t *)buf, buflen*2);
@@ -191,7 +180,6 @@ static void ili9341_fillRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
       todo_len=0;
     }
   }
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
   free(buf);
 }
 
@@ -205,9 +193,7 @@ static void ili9341_drawPixel(uint16_t x0, uint16_t y0) {
   }
   ili9341_set_clip(x0+s_window.x0, y0+s_window.y0, x0+s_window.x0+1, y0+s_window.y0+1);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 1);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 0);
   ili9341_spi_write((uint8_t *)&s_window.fg_color, 2);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
 }
 
 // External primitives -- these are exported and all functions
@@ -441,15 +427,11 @@ exit:
 }
 
 bool mgos_ili9341_spi_init(void) {
-  // Setup CS pin
-  mgos_gpio_set_mode(mgos_sys_config_get_ili9341_cs_pin(), MGOS_GPIO_MODE_OUTPUT);
-  mgos_gpio_write(mgos_sys_config_get_ili9341_cs_pin(), 1);
-
   // Setup DC pin
   mgos_gpio_set_mode(mgos_sys_config_get_ili9341_dc_pin(), MGOS_GPIO_MODE_OUTPUT);
   mgos_gpio_write(mgos_sys_config_get_ili9341_dc_pin(), 0);
 
-  LOG(LL_INFO, ("init (CS: %d, DC: %d, MODE: %d, FREQ: %d)", mgos_sys_config_get_ili9341_cs_pin(), mgos_sys_config_get_ili9341_dc_pin(), SPI_MODE, SPI_DEFAULT_FREQ));
+  LOG(LL_INFO, ("init (CS%d, DC: %d, MODE: %d, FREQ: %d)", mgos_sys_config_get_ili9341_cs_index(), mgos_sys_config_get_ili9341_dc_pin(), SPI_MODE, SPI_DEFAULT_FREQ));
   ili9341_commandList(ILI9341_init); 
 
   mgos_ili9341_set_orientation(ILI9341_SWITCH_XY | ILI9341_FLIP_X);
