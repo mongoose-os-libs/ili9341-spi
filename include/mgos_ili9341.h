@@ -31,6 +31,13 @@
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
+enum mgos_ili9341_rotation_t {
+  ILI9341_PORTRAIT       = 0,
+  ILI9341_LANDSCAPE      = 1,
+  ILI9341_PORTRAIT_FLIP  = 2,
+  ILI9341_LANDSCAPE_FLIP = 3,
+};
+
 // Externally callable functions:
 void mgos_ili9341_set_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void mgos_ili9341_set_fgcolor(uint8_t r, uint8_t g, uint8_t b);
@@ -39,7 +46,7 @@ uint16_t mgos_ili9341_color565(uint8_t r, uint8_t g, uint8_t b);
 void mgos_ili9341_set_fgcolor565(uint16_t rgb);
 void mgos_ili9341_set_bgcolor565(uint16_t rgb);
 void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height);
-void mgos_ili9341_set_orientation(uint8_t flags);
+void mgos_ili9341_set_rotation(enum mgos_ili9341_rotation_t rotation);
 void mgos_ili9341_set_inverted(bool inverted);
 uint16_t mgos_ili9341_get_screenWidth();
 uint16_t mgos_ili9341_get_screenHeight();

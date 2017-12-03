@@ -91,15 +91,8 @@ static void ili9341_set_orientation(uint8_t flags) {
   if (flags & ILI9341_FLIP_Y)
     madctl |= 1 << 7;
 
-  if (flags & ILI9341_SWITCH_XY) {
-    mgos_ili9341_set_dimensions(320, 240);
-    mgos_ili9341_set_window(0, 0, 319, 239);
+  if (flags & ILI9341_SWITCH_XY)
     madctl |= 1 << 5;
-  } else {
-    mgos_ili9341_set_dimensions(240, 320);
-    mgos_ili9341_set_window(0, 0, 239, 319);
-  }
-
   ili9341_spi_write8_cmd(ILI9341_MADCTL);
   ili9341_spi_write8(madctl);
 }
@@ -234,8 +227,29 @@ void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height) {
   s_screen_height = height;
 }
 
-void mgos_ili9341_set_orientation(uint8_t flags) {
-  return ili9341_set_orientation(flags);
+void mgos_ili9341_set_rotation(enum mgos_ili9341_rotation_t rotation) {
+  switch(rotation) {
+    case ILI9341_LANDSCAPE:
+      ili9341_set_orientation(ILI9341_SWITCH_XY|ILI9341_FLIP_X);
+      mgos_ili9341_set_dimensions(320,240);
+      mgos_ili9341_set_window(0,0,319,239);
+      break;
+    case ILI9341_LANDSCAPE_FLIP:
+      ili9341_set_orientation(ILI9341_SWITCH_XY);
+      mgos_ili9341_set_dimensions(320,240);
+      mgos_ili9341_set_window(0,0,319,239);
+      break;
+    case ILI9341_PORTRAIT_FLIP:
+      ili9341_set_orientation(ILI9341_FLIP_X);
+      mgos_ili9341_set_dimensions(240,320);
+      mgos_ili9341_set_window(0,0,239,319);
+      break;
+    default: // ILI9331_PORTRAIT
+      ili9341_set_orientation(0);
+      mgos_ili9341_set_dimensions(240,320);
+      mgos_ili9341_set_window(0,0,239,319);
+  }
+  return;
 }
 
 void mgos_ili9341_set_inverted(bool inverted) {
@@ -434,7 +448,7 @@ bool mgos_ili9341_spi_init(void) {
   LOG(LL_INFO, ("init (CS%d, DC: %d, MODE: %d, FREQ: %d)", mgos_sys_config_get_ili9341_cs_index(), mgos_sys_config_get_ili9341_dc_pin(), SPI_MODE, SPI_DEFAULT_FREQ));
   ili9341_commandList(ILI9341_init); 
 
-  mgos_ili9341_set_orientation(ILI9341_SWITCH_XY | ILI9341_FLIP_X);
+  mgos_ili9341_set_rotation(ILI9341_LANDSCAPE);
 
   ili9341_spi_write8_cmd(ILI9341_DISPON); //Display on
 
