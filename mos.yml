@@ -2,6 +2,7 @@ author: Pim van Pelt <pim@ipng.nl>
 type: lib
 description: Mongoose-OS library for ILI9341
 version: 1.0
+platforms: [esp8266, esp32]
 
 sources:
   - src
@@ -11,7 +12,7 @@ includes:
 
 config_schema:
   - ["ili9341", "o", {title: "ILI9341 settings"}]
-  - ["ili9341.cs_index", "i", 0, {title: "SPI cs*_gpio index [0..2]"}]
+  - ["ili9341.cs_index", "i", 0, {title: "spi.cs*_gpio index, 0, 1 or 2"}]
   - ["ili9341.dc_pin", "i", 33, {title: "TFT DC pin"}]
 
 libs:
