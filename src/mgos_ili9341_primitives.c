@@ -6,7 +6,7 @@
  * Copyright (c) 2012 Adafruit Industries.  All rights reserved.
  */
 
-static void ili9341_drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername)
+static void ili9341_drawCircleHelper(uint16_t x0, uint16_t y0, uint16_t r, uint8_t cornername)
 {
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
@@ -42,7 +42,7 @@ static void ili9341_drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t 
   }
 }
 
-static void ili9341_fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta) {
+static void ili9341_fillCircleHelper(uint16_t x0, uint16_t y0, uint16_t r, uint8_t cornername, int16_t delta) {
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
   int16_t ddF_y = -2 * r;
@@ -78,17 +78,17 @@ static void ili9341_fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t 
   }
 }
 
-void mgos_ili9341_drawCircle(int16_t x, int16_t y, int radius) {
-  int f = 1 - radius;
+void mgos_ili9341_drawCircle(uint16_t x, uint16_t y, uint16_t r) {
+  int f = 1 - r;
   int ddF_x = 1;
-  int ddF_y = -2 * radius;
+  int ddF_y = -2 * r;
   int x1 = 0;
-  int y1 = radius;
+  int y1 = r;
 
-  mgos_ili9341_drawPixel(x, y + radius);
-  mgos_ili9341_drawPixel(x, y - radius);
-  mgos_ili9341_drawPixel(x + radius, y);
-  mgos_ili9341_drawPixel(x - radius, y);
+  mgos_ili9341_drawPixel(x, y + r);
+  mgos_ili9341_drawPixel(x, y - r);
+  mgos_ili9341_drawPixel(x + r, y);
+  mgos_ili9341_drawPixel(x - r, y);
   while(x1 < y1) {
     if (f >= 0) {
       y1--;
@@ -109,9 +109,9 @@ void mgos_ili9341_drawCircle(int16_t x, int16_t y, int radius) {
   }
 }
 
-void mgos_ili9341_fillCircle(int16_t x0, int16_t y0, int radius) {
-  mgos_ili9341_drawLine(x0, y0-radius>0?y0-radius:0, x0, y0+radius+1);
-  ili9341_fillCircleHelper(x0, y0, radius, 3, 0);
+void mgos_ili9341_fillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
+  mgos_ili9341_drawLine(x0, y0-r>0?y0-r:0, x0, y0+r+1);
+  ili9341_fillCircleHelper(x0, y0, r, 3, 0);
 }
 
 
@@ -122,7 +122,7 @@ void mgos_ili9341_drawRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h) {
   mgos_ili9341_drawLine(x0, y0, x0, y0+h-1);
 }
 
-void mgos_ili9341_drawRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, uint16_t r) {
+void mgos_ili9341_drawRoundRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t r) {
   // draw the straight edges
   mgos_ili9341_drawLine(x0+r, y0, x0+w-r, y0);         // Top
   mgos_ili9341_drawLine(x0+r, y0+h-1, x0+w-r, y0+h-1); // Bottom
@@ -136,7 +136,7 @@ void mgos_ili9341_drawRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, 
   ili9341_drawCircleHelper(x0+w-r-1, y0+h-r-1, r, 4);  // Bottom Right
 }
 
-void mgos_ili9341_fillRoundRect(int16_t x0, int16_t y0, uint16_t w, uint16_t h, uint16_t r) {
+void mgos_ili9341_fillRoundRect(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t r) {
   mgos_ili9341_fillRect(x0+r, y0, w-2*r, h);
   ili9341_fillCircleHelper(x0+w-r-1, y0+r, r, 1, h-2*r-1);
   ili9341_fillCircleHelper(x0+r, y0+r, r, 2, h-2*r-1);
