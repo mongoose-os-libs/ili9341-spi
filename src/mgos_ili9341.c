@@ -231,23 +231,23 @@ void mgos_ili9341_set_rotation(enum mgos_ili9341_rotation_t rotation) {
   switch(rotation) {
     case ILI9341_LANDSCAPE:
       ili9341_set_orientation(ILI9341_SWITCH_XY|ILI9341_FLIP_X);
-      mgos_ili9341_set_dimensions(320,240);
-      mgos_ili9341_set_window(0,0,319,239);
+      mgos_ili9341_set_dimensions(mgos_ili9341_get_screenWidth(),mgos_ili9341_get_screenHeight());
+      mgos_ili9341_set_window(0,0,mgos_ili9341_get_screenWidth()-1,mgos_ili9341_get_screenHeight()-1);
       break;
     case ILI9341_LANDSCAPE_FLIP:
       ili9341_set_orientation(ILI9341_SWITCH_XY);
-      mgos_ili9341_set_dimensions(320,240);
-      mgos_ili9341_set_window(0,0,319,239);
+      mgos_ili9341_set_dimensions(mgos_ili9341_get_screenWidth(),mgos_ili9341_get_screenHeight());
+      mgos_ili9341_set_window(0,0,mgos_ili9341_get_screenWidth()-1,mgos_ili9341_get_screenHeight()-1);
       break;
     case ILI9341_PORTRAIT_FLIP:
       ili9341_set_orientation(ILI9341_FLIP_X);
-      mgos_ili9341_set_dimensions(240,320);
-      mgos_ili9341_set_window(0,0,239,319);
+      mgos_ili9341_set_dimensions(mgos_ili9341_get_screenWidth(),mgos_ili9341_get_screenHeight());
+      mgos_ili9341_set_window(0,0,mgos_ili9341_get_screenWidth()-1,mgos_ili9341_get_screenHeight()-1);
       break;
     default: // ILI9331_PORTRAIT
       ili9341_set_orientation(0);
-      mgos_ili9341_set_dimensions(240,320);
-      mgos_ili9341_set_window(0,0,239,319);
+      mgos_ili9341_set_dimensions(mgos_ili9341_get_screenWidth(),mgos_ili9341_get_screenHeight());
+      mgos_ili9341_set_window(0,0,mgos_ili9341_get_screenWidth()-1,mgos_ili9341_get_screenHeight()-1);
   }
   return;
 }
