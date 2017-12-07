@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* TODO: High-level file comment. */
-
 #ifndef __MGOS_ILI9341_FONT_H
 #define __MGOS_ILI9341_FONT_H
 

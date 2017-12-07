@@ -27,8 +27,6 @@
  * either expressed or implied, of the FreeBSD Project.
  */
 
-/* TODO: High-level file comment. */
-
 #ifndef __FONT_ORG_01_H
 #define __FONT_ORG_01_H
 // Org_v01 by Orgdot (www.orgdot.com/aliasfonts).  A tiny,

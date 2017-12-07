@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* TODO: High-level file comment. */
-
 #include "mgos_ili9341.h"
 #include "mgos_ili9341_hal.h"
 #include "mgos_ili9341_font.h"

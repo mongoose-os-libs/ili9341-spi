@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* TODO: High-level file comment. */
-
 #include "mgos_ili9341.h"
 
 static GFXfont *s_font = NULL;

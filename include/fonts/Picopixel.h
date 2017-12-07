@@ -27,8 +27,6 @@
  * either expressed or implied, of the FreeBSD Project.
  */
 
-/* TODO: High-level file comment. */
-
 #ifndef __FONT_PICOPIXEL_H
 #define __FONT_PICOPIXEL_H
 // Picopixel by Sebastian Weber.  A tiny font

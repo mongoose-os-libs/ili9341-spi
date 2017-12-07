@@ -27,7 +27,7 @@
  * either expressed or implied, of the FreeBSD Project.
  */
 
-/* TODO: High-level file comment. */
+/* Modified by Pim van Pelt <pim@google.com> */
 
 #ifndef _GFXFONT_H_
 #define _GFXFONT_H_
@@ -44,7 +44,7 @@ typedef struct { // Data stored for FONT AS A WHOLE:
   GFXglyph *glyph;       // Glyph array
   uint8_t   first, last; // ASCII extents
   uint8_t   yAdvance;    // Newline distance (y axis)
-      
+
   // Added(pimvanpelt) for framebuffer rendering.
   int8_t    font_height; // Maximum per-glyph height
   int8_t    font_width;  // Maximum per-glyph width

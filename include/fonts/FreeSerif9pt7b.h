@@ -27,8 +27,6 @@
  * either expressed or implied, of the FreeBSD Project.
  */
 
-/* TODO: High-level file comment. */
-
 #ifndef __FONT_FREESERIF9PT7B_H
 #define __FONT_FREESERIF9PT7B_H
 const uint8_t FreeSerif9pt7bBitmaps[] = {

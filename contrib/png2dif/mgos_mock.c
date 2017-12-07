@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* TODO: High-level file comment. */
-
 /* Some functions mocked from MGOS, so we can run unit tests standalone.
  */
 

@@ -27,8 +27,6 @@
  * either expressed or implied, of the FreeBSD Project.
  */
 
-/* TODO: High-level file comment. */
-
 #ifndef __FONT_FREESANSOBLIQUE18PT7B_H
 #define __FONT_FREESANSOBLIQUE18PT7B_H
 const uint8_t FreeSansOblique18pt7bBitmaps[] = {
