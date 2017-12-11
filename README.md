@@ -110,3 +110,9 @@ file size. The header is as follows:
 *   The last three bytes (offset 13..15) are reserved for future use.
 
 The file size will therefor be ***`w` * `h` + 16*** bytes.
+
+# Disclaimer
+
+This project is not an official Google project. It is not supported by Google
+and Google specifically disclaims all warranties as to its quality,
+merchantability, or fitness for a particular purpose.
