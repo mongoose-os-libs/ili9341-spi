@@ -4,7 +4,10 @@
 This library is a native implementation of a graphics chip for small TFT
 screens, the ILI9341. The chip is found in many popular displays, including
 320x240 and 480x320 pixel versions, and is capable of driving 16-bit
-(`RGB-565`) as well as 18-bit (`RGB-666`) modes.
+(`RGB-565`) as well as 18-bit (`RGB-666`) modes. Although the chip is capable
+of using 18-bit colors (262,114), that requires three bytes per pixel to be
+written. Therefore, this driver initializes it in 16-bit colors (65,536)
+allowing for two bytes per pixel.
 
 ## Fundamentals
 
