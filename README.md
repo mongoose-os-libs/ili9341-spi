@@ -111,6 +111,47 @@ file size. The header is as follows:
 
 The file size will therefor be ***`w` * `h` + 16*** bytes.
 
+### Example Application
+
+#### mos.yml
+
+The driver uses Mongoose OS native SPI driver. It is configured by setting
+up the `MOSI`, `MISO`, `SCLK` pins and assinging one of the three
+available `CS` positions, in this example (which was taken from
+the Huzzah32 ESP32 microcontroller), we are going to use `CS0`:
+
+```
+config_schema:
+  - ["spi.enable", true]
+  - ["spi.cs0_gpio", 15]      # The ILI9341 CS pin
+  - ["spi.cs1_gpio", -1]
+  - ["spi.cs2_gpio", -1]
+  - ["spi.mosi_gpio", 18]
+  - ["spi.miso_gpio", 19]
+  - ["spi.sclk_gpio", 5]
+  - ["ili9341.cs_index", 0]  # Use spi.cs0_gpio
+  - ["ili9341.dc_pin", 33]
+```
+
+#### Application
+
+```c
+#include "mgos.h"
+#include "mgos_ili9341.h"
+#include "fonts/FreeMonoBold9pt7b.h"
+
+enum mgos_app_init_result mgos_app_init(void) {
+  mgos_ili9341_set_fgcolor(0xff, 0, 0);          // Red
+  mgos_ili9341_set_window(20, 30, 119, 59);      // 100x30 pixels
+  mgos_ili9341_drawRoundRect(0, 0, 100, 30, 8);  // Draw a rounded rectangle
+  mgos_ili9341_set_fgcolor(0, 0xff, 0);          // Green
+  mgos_ili9341_set_font(&FreeMonoBold9pt7b);     // Set font
+  mgos_ili9341_print(5, 5, "Hello World");
+
+  return MGOS_APP_INIT_SUCCESS;
+}
+```
+
 # Disclaimer
 
 This project is not an official Google project. It is not supported by Google
