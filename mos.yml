@@ -6,6 +6,7 @@ platforms: [esp8266, esp32]
 
 sources:
   - src
+  - third_party/adafruit/src
 
 includes:
   - include
