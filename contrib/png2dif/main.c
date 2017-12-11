@@ -35,6 +35,7 @@ int png2dif(char *png_filename, char *dif_filename) {
   uint8_t out_byte;
   int ret = -1;
   int fd;
+  int xx, yy;
 
   if (!(upng = upng_new_from_file(png_filename))) {
     LOG(LL_ERROR, ("Can't read %s", png_filename));
@@ -65,8 +66,8 @@ int png2dif(char *png_filename, char *dif_filename) {
     goto exit;
   }
   png_buf_p = png_buf;
-  for (int yy=0; yy<height; yy++) {
-    for (int xx=0; xx<width; xx++) {
+  for (yy=0; yy<height; yy++) {
+    for (xx=0; xx<width; xx++) {
       int r, g, b;
       uint16_t output_rgb565;
       switch(upng_get_format(upng)) {

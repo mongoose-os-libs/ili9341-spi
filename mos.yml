@@ -9,6 +9,7 @@ sources:
 
 includes:
   - include
+  - third_party/adafruit/include
 
 config_schema:
   - ["ili9341", "o", {title: "ILI9341 settings"}]
