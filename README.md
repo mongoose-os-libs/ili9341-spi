@@ -89,7 +89,7 @@ will be clipped at the window borders.
 
 Since the ILI9341 chip expects pixels in 16-bit network byte order, we can
 transmit a line of pixels from an image. Because the build target of the driver
-is Mongoose OS's available platforms (notably ESP8266, ESP32 and CC32xx), memory
+is all Mongoose available platforms (notably ESP8266, ESP32 and CC32xx), memory
 is an issue, and decompressing `PNG`, `GIF`, or `JPG` files can be CPU as well
 as memory intensive, a simplistic alternative is provided: `DIF`
 
@@ -115,7 +115,7 @@ The file size will therefor be ***`w` * `h` + 16*** bytes.
 
 #### mos.yml
 
-The driver uses Mongoose OS native SPI driver. It is configured by setting
+The driver uses the Mongoose native SPI driver. It is configured by setting
 up the `MOSI`, `MISO`, `SCLK` pins and assinging one of the three
 available `CS` positions, in this example (which was taken from
 the Huzzah32 ESP32 microcontroller), we are going to use `CS0`:
