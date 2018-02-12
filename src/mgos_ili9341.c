@@ -35,8 +35,8 @@ struct ili9341_window {
   uint16_t bg_color; // in network byte order
 };
 
-static uint16_t s_screen_width = 240;
-static uint16_t s_screen_height = 320;
+static uint16_t s_screen_width;
+static uint16_t s_screen_height;
 static struct ili9341_window s_window;
 
 static const uint8_t ILI9341_init[] = {
@@ -514,6 +514,7 @@ bool mgos_ili9341_spi_init(void) {
 
   ili9341_commandList(ILI9341_init);
 
+  mgos_ili9341_set_dimensions(mgos_sys_config_get_ili9341_width(), mgos_sys_config_get_ili9341_height());
   mgos_ili9341_set_rotation(ILI9341_LANDSCAPE);
 
   return true;

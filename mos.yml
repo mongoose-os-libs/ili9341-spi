@@ -18,6 +18,8 @@ config_schema:
   - ["ili9341.spi_freq", "i", 20000000, {title: "SPI frequency"}]
   - ["ili9341.dc_pin", "i", 33, {title: "TFT DC pin"}]
   - ["ili9341.rst_pin", "i", -1, {title: "RST pin. If set, will be used to reinit the display."}]
+  - ["ili9341.width", "i", 320, {title: "TFT width in pixels"}]
+  - ["ili9341.height", "i", 240, {title: "TFT height in pixels"}]
 
 libs:
   - origin: https://github.com/mongoose-os-libs/spi
