@@ -91,6 +91,8 @@
 #define ILI9341_PRC           0xF7
 #define ILI9341_3GAMMA_EN     0xF2
 
+#define ILI9341_INVALID_CMD   0xFF
+
 #define MADCTL_MY             0x80
 #define MADCTL_MX             0x40
 #define MADCTL_MV             0x20
@@ -98,39 +100,5 @@
 #define MADCTL_MH             0x04
 
 #define ILI9341_DELAY   0x80
-
-static const uint8_t ILI9341_init[] = {
-  24,                                                                // 24 commands in list
-  ILI9341_SWRESET, ILI9341_DELAY,                                    //  1: Software reset, no args, w/delay
-  250,                                                               //     200 ms delay
-  ILI9341_POWERA, 5, 0x39, 0x2C, 0x00, 0x34, 0x02,
-  ILI9341_POWERB, 3, 0x00, 0XC1, 0X30,
-  0xEF, 3, 0x03, 0x80, 0x02,
-  ILI9341_DTCA, 3, 0x85, 0x00, 0x78,
-  ILI9341_DTCB, 2, 0x00, 0x00,
-  ILI9341_POWER_SEQ, 4, 0x64, 0x03, 0X12, 0X81,
-  ILI9341_PRC, 1, 0x20,
-  ILI9341_PWCTR1, 1, 0x23,                                           // Power control VRH[5:0]
-  ILI9341_PWCTR2, 1, 0x10,                                           // Power control SAP[2:0];BT[3:0]
-  ILI9341_VMCTR1, 2, 0x3e, 0x28,                                     // VCM control
-  ILI9341_VMCTR2, 1, 0x86,                                           // VCM control2
-  ILI9341_MADCTL, 1,                                                 // Memory Access Control (orientation)
-  (MADCTL_MX | ILI9341_RGB_BGR),
-  // *** INTERFACE PIXEL FORMAT: 0x66 -> 18 bit; 0x55 -> 16 bit
-  ILI9341_PIXFMT, 1, 0x55,
-  ILI9341_INVOFF, 0,
-  ILI9341_FRMCTR1, 2, 0x00, 0x18,
-  ILI9341_DFUNCTR, 4, 0x08, 0x82, 0x27, 0x00,                        // Display Function Control
-  ILI9341_PTLAR, 4, 0x00, 0x00, 0x01, 0x3F,
-  ILI9341_3GAMMA_EN, 1, 0x00,                                        // 3Gamma Function: Disable (0x02), Enable (0x03)
-  ILI9341_GAMMASET, 1, 0x01,                                         // Gamma curve selected (0x01, 0x02, 0x04, 0x08)
-  ILI9341_GMCTRP1, 15,                                               // Positive Gamma Correction
-  0x0F, 0x31, 0x2B, 0x0C, 0x0E, 0x08, 0x4E, 0xF1, 0x37, 0x07, 0x10, 0x03, 0x0E, 0x09, 0x00,
-  ILI9341_GMCTRN1, 15,                                               // Negative Gamma Correction
-  0x00, 0x0E, 0x14, 0x03, 0x11, 0x07, 0x31, 0xC1, 0x48, 0x08, 0x0F, 0x0C, 0x31, 0x36, 0x0F,
-  ILI9341_SLPOUT, ILI9341_DELAY,                                     // Sleep out
-  200,                                                               // 120 ms delay
-  ILI9341_DISPON, ILI9341_DELAY, 200,
-};
 
 #endif // __MGOS_ILI9341_HAL_H
