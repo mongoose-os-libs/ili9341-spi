@@ -15,7 +15,9 @@ includes:
 config_schema:
   - ["ili9341", "o", {title: "ILI9341 settings"}]
   - ["ili9341.cs_index", "i", 0, {title: "spi.cs*_gpio index, 0, 1 or 2"}]
+  - ["ili9341.spi_freq", "i", 20000000, {title: "SPI frequency"}]
   - ["ili9341.dc_pin", "i", 33, {title: "TFT DC pin"}]
+  - ["ili9341.rst_pin", "i", -1, {title: "RST pin. If set, will be used to reinit the display."}]
 
 libs:
   - origin: https://github.com/mongoose-os-libs/spi

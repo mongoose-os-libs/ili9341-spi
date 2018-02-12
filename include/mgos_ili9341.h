@@ -41,10 +41,6 @@
 #define ILI9341_GREENYELLOW 0xAFE5      /* 173, 255,  47 */
 #define ILI9341_PINK        0xF81F
 
-#ifndef SPI_DEFAULT_FREQ
-#define SPI_DEFAULT_FREQ         20000000
-#endif // SPI_DEFAULT_FREQ
-
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
 enum mgos_ili9341_rotation_t {
@@ -93,6 +89,5 @@ uint16_t mgos_ili9341_getStringHeight(char *string);
 
 // Images
 void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn);
-
 
 #endif // __MGOS_ILI9341_H
