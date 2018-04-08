@@ -129,6 +129,8 @@ The generated `dif` file should then be placed inside the `fs` directory, and ca
 mgos_ili9341_drawDIF( 0, 0, "/output.dif" );
 ```
 
+Example usage of `DIF` images, and this library, can be found in the [Huzzah Featherwing Example App](https://github.com/mongoose-os-apps/huzzah-featherwing)
+
 ### Example Application
 
 #### mos.yml
