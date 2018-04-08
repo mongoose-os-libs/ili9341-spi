@@ -111,6 +111,16 @@ file size. The header is as follows:
 
 The file size will therefor be ***`w` * `h` + 16*** bytes.
 
+#### Converting PNG to DIF
+
+To convert `PNG` images to `DIF` images, there is a `png2dif` utility available in this repo, under `contrib/png2dif`
+
+Clone this repo, and while inside the `contrib/png2dif` directory, run `make` to generate `png2dif` executable.  You can then run `png2dif -i input.png -o output.dif` to convert a non-transparent `png` file, to a `dif` file.
+
+The generated `dif` file should then be placed inside the `fs` directory, and can be displayed using `mgos_ili9341_drawDIF`.  As an example, if the filename is `output.dif`, to display at x cord of 0 and y cord of 0:
+
+`mgos_ili9341_drawDIF( 0, 0, "/output.dif" );`
+
 ### Example Application
 
 #### mos.yml
