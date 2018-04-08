@@ -93,6 +93,12 @@ is all Mongoose available platforms (notably ESP8266, ESP32 and CC32xx), memory
 is an issue, and decompressing `PNG`, `GIF`, or `JPG` files can be CPU as well
 as memory intensive, a simplistic alternative is provided: `DIF`
 
+This function can be used for displaying `DIF` images:
+
+```c
+void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn);
+```
+
 #### DIF file format
 
 `DIF` stands for __dumb image format__, and consists of a 16 byte header
@@ -110,6 +116,20 @@ file size. The header is as follows:
 *   The last three bytes (offset 13..15) are reserved for future use.
 
 The file size will therefor be ***`w` * `h` + 16*** bytes.
+
+#### Converting PNG to DIF
+
+To convert `PNG` images to `DIF` images, there is a `png2dif` utility available in this repo, under `contrib/png2dif`
+
+Clone this repo, and while inside the `contrib/png2dif` directory, run `make` to generate `png2dif` executable.  You can then run `png2dif -i input.png -o output.dif` to convert a non-transparent `png` file, to a `dif` file.
+
+The generated `dif` file should then be placed inside the `fs` directory, and can be displayed using `mgos_ili9341_drawDIF`.  As an example, if the filename is `output.dif`, to display at x cord of 0 and y cord of 0:
+
+```c
+mgos_ili9341_drawDIF( 0, 0, "/output.dif" );
+```
+
+Example usage of `DIF` images, and this library, can be found in the [Huzzah Featherwing Example App](https://github.com/mongoose-os-apps/huzzah-featherwing)
 
 ### Example Application
 
