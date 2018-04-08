@@ -93,6 +93,12 @@ is all Mongoose available platforms (notably ESP8266, ESP32 and CC32xx), memory
 is an issue, and decompressing `PNG`, `GIF`, or `JPG` files can be CPU as well
 as memory intensive, a simplistic alternative is provided: `DIF`
 
+This function can be used for displaying `DIF` images:
+
+```c
+void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn);
+```
+
 #### DIF file format
 
 `DIF` stands for __dumb image format__, and consists of a 16 byte header
@@ -119,7 +125,9 @@ Clone this repo, and while inside the `contrib/png2dif` directory, run `make` to
 
 The generated `dif` file should then be placed inside the `fs` directory, and can be displayed using `mgos_ili9341_drawDIF`.  As an example, if the filename is `output.dif`, to display at x cord of 0 and y cord of 0:
 
-`mgos_ili9341_drawDIF( 0, 0, "/output.dif" );`
+```c
+mgos_ili9341_drawDIF( 0, 0, "/output.dif" );
+```
 
 ### Example Application
 
