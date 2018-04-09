@@ -399,7 +399,7 @@ void mgos_ili9341_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     if (dlen) {
       mgos_ili9341_drawLine(y0, xs, y0, xs + dlen);
     }
-  }else  {
+  }else {
     for (; x0 <= x1; x0++) {
       dlen++;
       err -= dy;

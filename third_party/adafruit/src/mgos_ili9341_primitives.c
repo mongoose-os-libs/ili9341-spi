@@ -220,7 +220,7 @@ void mgos_ili9341_fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
   // (flat-topped triangle).
   if (y1 == y2) {
     last = y1;              // Include y1 scanline
-  }else                                                     {
+  }else {
     last = y1 - 1;          // Skip it
   }
   for (y = y0; y <= last; y++) {
