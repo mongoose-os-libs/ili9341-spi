@@ -29,18 +29,18 @@ let ILI9341 = {
 
     // ffi functions
     // Externally callable functions:
-    set_window: ffi('void mgos_ili9341_set_window(int, int, int, int)'),
-    set_fgcolor: ffi('void mgos_ili9341_set_fgcolor(int, int, int)'),
-    set_bgcolor: ffi('void mgos_ili9341_set_bgcolor(int, int, int)'),
+    setWindow: ffi('void mgos_ili9341_set_window(int, int, int, int)'),
+    setFgColor: ffi('void mgos_ili9341_set_fgcolor(int, int, int)'),
+    setBgColor: ffi('void mgos_ili9341_set_bgcolor(int, int, int)'),
     color565: ffi('int mgos_ili9341_color565(int, int, int)'),
-    set_fgcolor565: ffi('void mgos_ili9341_set_fgcolor565(int )'),
-    set_bgcolor565: ffi('void mgos_ili9341_set_bgcolor565(int)'),
-    set_dimensions: ffi('void mgos_ili9341_set_dimensions(int, int)'),
+    setFgColor565: ffi('void mgos_ili9341_set_fgcolor565(int )'),
+    setBgColor565: ffi('void mgos_ili9341_set_bgcolor565(int)'),
+    setDimensions: ffi('void mgos_ili9341_set_dimensions(int, int)'),
     // argument is enum mgos_ili9341_rotation_t
-    set_rotation: ffi('void mgos_ili9341_set_rotation(int)'),
-    set_inverted: ffi('void mgos_ili9341_set_inverted(bool)'),
-    get_screenWidth: ffi('int mgos_ili9341_get_screenWidth()'),
-    get_screenHeight: ffi('int mgos_ili9341_get_screenHeight()'),
+    setRotation: ffi('void mgos_ili9341_set_rotation(int)'),
+    setInverted: ffi('void mgos_ili9341_set_inverted(bool)'),
+    getScreenWidth: ffi('int mgos_ili9341_get_screenWidth()'),
+    getScreenHeight: ffi('int mgos_ili9341_get_screenHeight()'),
 
     fillScreen: ffi('void mgos_ili9341_fillScreen()'),
 
@@ -62,7 +62,7 @@ let ILI9341 = {
 
     // Fonts and Printing:
     // argument is GFXfont*, need to find a way to get it
-    set_font: ffi('bool mgos_ili9341_set_font(void*)'),
+    setFont: ffi('bool mgos_ili9341_set_font(void*)'),
     print: ffi('void mgos_ili9341_print(int, int, char *s)'),
     getStringWidth: ffi('int mgos_ili9341_getStringWidth(char*)'),
     getStringHeight: ffi('int mgos_ili9341_getStringHeight(char*)'),
