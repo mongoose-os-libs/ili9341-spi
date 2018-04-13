@@ -23,6 +23,8 @@ static bool ili9341_analyzeFont(GFXfont *f) {
   int chars = f->last - f->first;
   int maxHeight = 0, minyo = 0, maxWidth = 0, maxAdvance = 0, minxo = 0, maxxo = 0, maxhyo = 0, minhyo = 0, maxyo = 0, maxwxo = 0, minwxo = 0;
 
+  if (f->font_height > 0) return true;  /* Already analyzed */
+
   for (int i = 0; i < chars; i++) {
     GFXglyph *glyph = f->glyph + i;
     uint8_t   w     = glyph->width;
@@ -31,7 +33,7 @@ static bool ili9341_analyzeFont(GFXfont *f) {
     int8_t    xa    = glyph->xAdvance;
     int8_t    yo    = glyph->yOffset;
 
-    LOG(LL_DEBUG, ("char=0x%02x '%c' w=%d h=%d xOffset=%d yOffset=%d xAdvance=%d", i + f->first, i + f->first, w, h, xo, yo, xa));
+    // LOG(LL_DEBUG, ("char=0x%02x '%c' w=%d h=%d xOffset=%d yOffset=%d xAdvance=%d", i + f->first, i + f->first, w, h, xo, yo, xa));
     if (h + yo > maxhyo) {
       maxhyo = h + yo;
     }
@@ -70,12 +72,12 @@ static bool ili9341_analyzeFont(GFXfont *f) {
       maxAdvance = xa;
     }
   }
-  LOG(LL_DEBUG, ("maxHeight=%d maxWidth=%d maxAdvance=%d minxo=%d maxxo=%d minyo=%d maxyo=%d maxhyo=%d, minhyo=%d", maxHeight, maxWidth, maxAdvance, minxo, maxxo, minyo, maxyo, maxhyo, minhyo));
+  // LOG(LL_DEBUG, ("maxHeight=%d maxWidth=%d maxAdvance=%d minxo=%d maxxo=%d minyo=%d maxyo=%d maxhyo=%d, minhyo=%d", maxHeight, maxWidth, maxAdvance, minxo, maxxo, minyo, maxyo, maxhyo, minhyo));
   f->font_height      = maxhyo - minyo;
   f->font_width       = maxAdvance > maxWidth ? maxAdvance : maxWidth;
   f->font_min_xOffset = minxo;
   f->font_min_yOffset = minyo;
-  LOG(LL_INFO, ("Fontsize: HxW = %dx%d; min_xOffset=%d, min_yOffset=%d, there are %d chars in this font", f->font_height, f->font_width, f->font_min_xOffset, f->font_min_yOffset, chars));
+  // LOG(LL_INFO, ("Fontsize: HxW = %dx%d; min_xOffset=%d, min_yOffset=%d, there are %d chars in this font", f->font_height, f->font_width, f->font_min_xOffset, f->font_min_yOffset, chars));
 
   return true;
 }
@@ -184,6 +186,14 @@ uint16_t mgos_ili9341_getStringWidth(char *string) {
     }
   }
   return pixelline_width;
+}
+
+int mgos_ili9341_get_max_font_width(void) {
+  return (s_font ? s_font->font_width : 0);
+}
+
+int mgos_ili9341_get_max_font_height(void) {
+  return (s_font ? s_font->font_height : 0);
 }
 
 bool mgos_ili9341_set_font(GFXfont *f) {
