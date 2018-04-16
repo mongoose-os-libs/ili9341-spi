@@ -63,7 +63,7 @@ let ILI9341 = {
     // Fonts and Printing:
     // argument is GFXfont*, need to find a way to get it
     setFont: ffi('bool mgos_ili9341_set_font(void*)'),
-    print: ffi('void mgos_ili9341_print(int, int, char *s)'),
+    print: ffi('void mgos_ili9341_print(int, int, char*)'),
     getStringWidth: ffi('int mgos_ili9341_getStringWidth(char*)'),
     getStringHeight: ffi('int mgos_ili9341_getStringHeight(char*)'),
     getMaxFontWidth: ffi('int mgos_ili9341_get_max_font_width()'),
