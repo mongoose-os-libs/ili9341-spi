@@ -18,6 +18,8 @@
 
 #include <unistd.h>
 
+#include "common/str_util.h"
+
 #include "mgos_config.h"
 #include "mgos_gpio.h"
 
@@ -443,7 +445,7 @@ void mgos_ili9341_fillScreen() {
   return ili9341_fillRect(0, 0, s_screen_width, s_screen_height);
 }
 
-void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
+void mgos_ili9341_print(uint16_t x0, uint16_t y0, const char *string) {
   uint16_t  pixelline_width = 0;
   uint16_t *pixelline;
   uint16_t  lines;
@@ -459,7 +461,7 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
     LOG(LL_ERROR, ("getStringHeight returned 0 -- is the font set?"));
     return;
   }
-  LOG(LL_DEBUG, ("string='%s' at (%d,%d), width=%u height=%u", string, x0, y0, pixelline_width, lines));
+  //LOG(LL_DEBUG, ("string='%s' at (%d,%d), width=%u height=%u", string, x0, y0, pixelline_width, lines));
 
   pixelline = calloc(pixelline_width, sizeof(uint16_t));
   if (!pixelline) {
@@ -479,6 +481,17 @@ void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *string) {
     ili9341_send_pixels(x0, y0 + line, x0 + pixelline_width - 1, y0 + line, (uint8_t *)pixelline, pixelline_width * sizeof(uint16_t));
   }
   free(pixelline);
+}
+
+void mgos_ili9341_printf(uint16_t x0, uint16_t y0, const char *fmt, ...) {
+  char buf[50], *s = buf;
+  va_list ap;
+  va_start(ap, fmt);
+  if (mg_avprintf(&s, sizeof(buf), fmt, ap) > 0) {
+    mgos_ili9341_print(x0, y0, s);
+  }
+  va_end(ap);
+  if (s != buf) free(s);
 }
 
 uint16_t mgos_ili9341_get_screenWidth() {
