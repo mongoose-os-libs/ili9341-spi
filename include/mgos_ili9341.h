@@ -41,6 +41,14 @@
 #define ILI9341_GREENYELLOW    0xAFE5   /* 173, 255,  47 */
 #define ILI9341_PINK           0xF81F
 
+// ILI9341 Display orientation bits, see README.md for details
+#define ILI9341_MADCTL_MY    0x80   // LCD Row Order Bottom-Top
+#define ILI9341_MADCTL_MX    0x40   // LCD Column Order Right-Left
+#define ILI9341_MADCTL_MV    0x20   // LCD Row/Col Reverse
+#define ILI9341_MADCTL_ML    0x10   // LCD Vertical Refresh Bottom-Top
+#define ILI9341_MADCTL_BGR   0x08   // Blue-Green-Red pixel order
+#define ILI9341_MADCTL_MH    0x04   // LCD Horizontal Refresh Right-Left
+
 #define swap(a, b)    { int16_t t = a; a = b; b = t; }
 
 enum mgos_ili9341_rotation_t {
@@ -57,6 +65,7 @@ void mgos_ili9341_set_bgcolor(uint8_t r, uint8_t g, uint8_t b);
 uint16_t mgos_ili9341_color565(uint8_t r, uint8_t g, uint8_t b);
 void mgos_ili9341_set_fgcolor565(uint16_t rgb);
 void mgos_ili9341_set_bgcolor565(uint16_t rgb);
+void mgos_ili9341_set_orientation(uint8_t madctl, uint16_t width, uint16_t height);
 void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height);
 void mgos_ili9341_set_rotation(enum mgos_ili9341_rotation_t rotation);
 void mgos_ili9341_set_inverted(bool inverted);

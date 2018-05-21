@@ -39,6 +39,50 @@ foreground color to it.
 
 ## Primitives
 
+### Orientations
+
+Depending on how the hardware manufacturer connected the LCD panel to the
+`ILI9341` chip, several registers are provided to determine the true
+orientation of the screen. From the datasheet, there are 5 bits which determine
+that orientation, in the `MADCTL` register, as follows:
+
+* bit2 sets the *Horizontal Refresh*
+    *    0=Left-Right
+    *    1=Right-Left
+* bit4 sets the *Vertical Refresh*
+    *    0=Top-Bottom
+    *    1=Bottom-Top
+* bit5 sets the *Row/Column exchange*
+    *    0=Normal
+    *    1=Reverse
+* bit6 sets the *Column Order*
+    *    0=Left-Right
+    *    1=Right-Left
+* bit7 sets the *Row Order*
+    *    0=Top-Bottom
+    *    1=Bottom-Top
+
+This bits are defined as `ILI9341_MADCTL_*` in `mgos_ili9341.h` header file.
+By means of example, here's a definition for Adafruit panels:
+
+```
+#define ADAFRUIT_PORTRAIT        (ILI9341_MADCTL_MX)
+#define ADAFRUIT_LANDSCAPE       (ILI9341_MADCTL_MX|ILI9341_MADCTL_MY|ILI9341_MADCTL_MV)
+#define ADAFRUIT_PORTRAIT_FLIP   (ILI9341_MADCTL_MY)
+#define ADAFRUIT_LANDSCAPE_FLIP  (ILI9341_MADCTL_MV)
+```
+
+And here's a definition for the panel used in M5Stack:
+```
+#define M5STACK_PORTRAIT         (ILI9341_MADCTL_MV|ILI9341_MADCTL_MY)
+#define M5STACK_LANDSCAPE        (0x00)
+#define M5STACK_PORTRAIT_FLIP    (ILI9341_MADCTL_MV|ILI9341_MADCTL_MX)
+#define M5STACK_LANDSCAPE_FLIP   (ILI9341_MADCTL_MY|ILI9341_MADCTL_ML|ILI9341_MADCTL_MX)
+```
+
+The API call `mgos_ili9341_set_orientation()` gives full control over these
+settings, as well as setting the resulting width and height in pixels.
+
 ### Window and Clipping
 
 The driver works by setting a bounding box around the area to be drawn in:

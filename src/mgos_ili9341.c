@@ -274,6 +274,25 @@ void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height) {
   s_screen_height = height;
 }
 
+/* Many screen implementations differ in orientation. Here's some application hints:
+ * #define ADAFRUIT_LCD_PORTRAIT        (ILI9341_MADCTL_MX)
+ * #define ADAFRUIT_LCD_LANDSCAPE       (ILI9341_MADCTL_MX | ILI9341_MADCTL_MY | ILI9341_MADCTL_MV)
+ * #define ADAFRUIT_LCD_PORTRAIT_FLIP   (ILI9341_MADCTL_MY)
+ * #define ADAFRUIT_LCD_LANDSCAPE_FLIP  (ILI9341_MADCTL_MV)
+ *
+ * #define M5STACK_LCD_PORTRAIT         (ILI9341_MADCTL_MV | ILI9341_MADCTL_MY)
+ * #define M5STACK_LCD_LANDSCAPE        (ILI9341_MADCTL_NONE)
+ * #define M5STACK_LCD_PORTRAIT_FLIP    (ILI9341_MADCTL_MV | ILI9341_MADCTL_MX)
+ * #define M5STACK_LCD_LANDSCAPE_FLIP   (ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MX)
+ */
+void mgos_ili9341_set_orientation(uint8_t madctl, uint16_t rows, uint16_t cols) {
+  madctl |= ILI9341_MADCTL_BGR;
+  ili9341_spi_write8_cmd(ILI9341_MADCTL);
+  ili9341_spi_write8(madctl);
+  mgos_ili9341_set_dimensions(rows,cols);
+  mgos_ili9341_set_window(0, 0, mgos_ili9341_get_screenWidth() - 1, mgos_ili9341_get_screenHeight() - 1);
+}
+
 void mgos_ili9341_set_rotation(enum mgos_ili9341_rotation_t rotation) {
   uint8_t madctl;
   uint16_t w=mgos_ili9341_get_screenWidth();
