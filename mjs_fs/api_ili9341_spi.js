@@ -69,6 +69,7 @@ let ILI9341 = {
     getStringHeight: ffi('int mgos_ili9341_getStringHeight(char*)'),
     getMaxFontWidth: ffi('int mgos_ili9341_get_max_font_width()'),
     getMaxFontHeight: ffi('int mgos_ili9341_get_max_font_height()'),
+    line: ffi('int mgos_ili9341_line(int)'),
 
     // Images
     drawDIF: ffi('void mgos_ili9341_drawDIF(int, int, char*)'),
