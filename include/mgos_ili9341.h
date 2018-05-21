@@ -83,11 +83,16 @@ void mgos_ili9341_fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
 
 // Fonts and Printing:
 bool mgos_ili9341_set_font(GFXfont *f);
-void mgos_ili9341_print(uint16_t x0, uint16_t y0, char *s);
-uint16_t mgos_ili9341_getStringWidth(char *string);
-uint16_t mgos_ili9341_getStringHeight(char *string);
+void mgos_ili9341_print(uint16_t x0, uint16_t y0, const char *s);
+void mgos_ili9341_printf(uint16_t x0, uint16_t y0, const char *fmt, ...);
+uint16_t mgos_ili9341_getStringWidth(const char *string);
+uint16_t mgos_ili9341_getStringHeight(const char *string);
 int mgos_ili9341_get_max_font_width(void);
 int mgos_ili9341_get_max_font_height(void);
+
+// Returns Y position for line N for the currently selected font.
+// If n is negative, returns N-th line from the bottom.
+uint16_t mgos_ili9341_line(int n);
 
 // Images
 void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn);

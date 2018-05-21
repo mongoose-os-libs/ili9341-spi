@@ -82,7 +82,7 @@ static bool ili9341_analyzeFont(GFXfont *f) {
   return true;
 }
 
-uint16_t ili9341_print_fillPixelLine(char *string, uint8_t line, uint16_t *buf, uint16_t color) {
+uint16_t ili9341_print_fillPixelLine(const char *string, uint8_t line, uint16_t *buf, uint16_t color) {
   uint16_t pixelline_width = 0;
   uint8_t *bitmap;
   uint16_t xx = 0;
@@ -94,11 +94,12 @@ uint16_t ili9341_print_fillPixelLine(char *string, uint8_t line, uint16_t *buf, 
 
 //  LOG(LL_DEBUG, ("Line %d of string '%s'", line, string));
   for (uint16_t i = 0; i < strlen(string); i++) {
-    if (string[i] < s_font->first || string[i] > s_font->last) {
+    char c = string[i];
+    if (c < s_font->first || c > s_font->last) {
       LOG(LL_DEBUG, ("String character 0x%02x is not in font, replacing with ' '", i));
-      string[i] = ' ';
+      c = ' ';
     }
-    GFXglyph *glyph        = s_font->glyph + (string[i] - s_font->first);
+    GFXglyph *glyph        = s_font->glyph + (c - s_font->first);
     uint8_t   w            = glyph->width;
     uint8_t   h            = glyph->height;
     int8_t    xo           = glyph->xOffset;
@@ -109,9 +110,9 @@ uint16_t ili9341_print_fillPixelLine(char *string, uint8_t line, uint16_t *buf, 
     uint8_t   bits;
     uint16_t  fl = 0, ll = 0;
 
-//    LOG(LL_DEBUG, ("char=0x%02x '%c' w=%d h=%d xOffset=%d yOffset=%d xAdvance=%d bo=%d bo_bitoffset=%d", string[i], string[i], w, h, xo, yo, xa, bo, bo_bitoffset));
+//    LOG(LL_DEBUG, ("char=0x%02x '%c' w=%d h=%d xOffset=%d yOffset=%d xAdvance=%d bo=%d bo_bitoffset=%d", c, string[i], w, h, xo, yo, xa, bo, bo_bitoffset));
     if (xo < 0 && pixelline_width == 0) {
-//      LOG(LL_DEBUG, ("First glyph '%c' has negative xOffset, adding %d to length", string[i], -xo));
+//      LOG(LL_DEBUG, ("First glyph '%c' has negative xOffset, adding %d to length", c, -xo));
       pixelline_width = -xo;
     }
 
@@ -120,11 +121,11 @@ uint16_t ili9341_print_fillPixelLine(char *string, uint8_t line, uint16_t *buf, 
     ll = fl + h - 1;
 
     if (line < fl || line > ll) {
-//      LOG(LL_DEBUG, ("Glyph '%c' goes from line [%d..%d], skipping", string[i], fl, ll));
+//      LOG(LL_DEBUG, ("Glyph '%c' goes from line [%d..%d], skipping", c, fl, ll));
     } else {
       bo           += (bo_bitoffset / 8);
       bo_bitoffset %= 8;
-//      LOG(LL_DEBUG, ("Glyph '%c' goes from [%d..%d] on lines [%d..%d], data bo=%d%%%d for %d bits", string[i], pixelline_width+xo, pixelline_width+xo+w-1, fl, ll, bo, bo_bitoffset, w));
+//      LOG(LL_DEBUG, ("Glyph '%c' goes from [%d..%d] on lines [%d..%d], data bo=%d%%%d for %d bits", c, pixelline_width+xo, pixelline_width+xo+w-1, fl, ll, bo, bo_bitoffset, w));
 
       bits   = bitmap[bo];
       bits <<= bo_bitoffset;
@@ -149,14 +150,14 @@ uint16_t ili9341_print_fillPixelLine(char *string, uint8_t line, uint16_t *buf, 
   return pixelline_width;
 }
 
-uint16_t mgos_ili9341_getStringHeight(char *string) {
+uint16_t mgos_ili9341_getStringHeight(const char *string) {
   if (!s_font || !string || strlen(string) == 0) {
     return 0;
   }
   return s_font->font_height;
 }
 
-uint16_t mgos_ili9341_getStringWidth(char *string) {
+uint16_t mgos_ili9341_getStringWidth(const char *string) {
   uint16_t pixelline_width = 0;
 
   if (!s_font || !string) {
@@ -164,15 +165,16 @@ uint16_t mgos_ili9341_getStringWidth(char *string) {
   }
 
   for (uint16_t i = 0; i < strlen(string); i++) {
-    if (string[i] < s_font->first || string[i] > s_font->last) {
+    char c = string[i];
+    if (c < s_font->first || c > s_font->last) {
       LOG(LL_WARN, ("String character 0x%02x is not in font, replacing with ' '", i));
-      string[i] = ' ';
+      c = ' ';
     }
-    GFXglyph *glyph = s_font->glyph + (string[i] - s_font->first);
+    GFXglyph *glyph = s_font->glyph + (c - s_font->first);
     uint8_t   w     = glyph->width;
     int8_t    xo    = glyph->xOffset;
     int8_t    xa    = glyph->xAdvance;
-//    LOG(LL_DEBUG, ("char=0x%02x '%c' w=%d xOffset=%d xAdvance=%d", string[i], string[i], w, xo, xa));
+//    LOG(LL_DEBUG, ("char=0x%02x '%c' w=%d xOffset=%d xAdvance=%d", c, c, w, xo, xa));
 
     if (xo < 0 && pixelline_width == 0) {
 //      LOG(LL_DEBUG, ("First character has negative xOffset, adding %d to length", -xo));
@@ -194,6 +196,12 @@ int mgos_ili9341_get_max_font_width(void) {
 
 int mgos_ili9341_get_max_font_height(void) {
   return (s_font ? s_font->font_height : 0);
+}
+
+uint16_t mgos_ili9341_line(int n) {
+  int res = n * mgos_ili9341_get_max_font_height();
+  if (res < 0) res = res + mgos_ili9341_get_screenHeight();
+  return res;
 }
 
 bool mgos_ili9341_set_font(GFXfont *f) {
