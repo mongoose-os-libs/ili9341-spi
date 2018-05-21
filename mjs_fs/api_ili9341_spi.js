@@ -36,6 +36,7 @@ let ILI9341 = {
     setFgColor565: ffi('void mgos_ili9341_set_fgcolor565(int )'),
     setBgColor565: ffi('void mgos_ili9341_set_bgcolor565(int)'),
     setDimensions: ffi('void mgos_ili9341_set_dimensions(int, int)'),
+    setOrientation: ffi('void mgos_ili9341_set_orientation(int, int, int)'),
     // argument is enum mgos_ili9341_rotation_t
     setRotation: ffi('void mgos_ili9341_set_rotation(int)'),
     setInverted: ffi('void mgos_ili9341_set_inverted(bool)'),
