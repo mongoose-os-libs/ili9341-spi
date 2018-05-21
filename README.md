@@ -46,19 +46,19 @@ Depending on how the hardware manufacturer connected the LCD panel to the
 orientation of the screen. From the datasheet, there are 5 bits which determine
 that orientation, in the `MADCTL` register, as follows:
 
-* bit2 sets the *Horizontal Refresh*
+* bit2 `ILI9341_MADCTL_MH` - sets the *Horizontal Refresh*
     *    0=Left-Right
     *    1=Right-Left
-* bit4 sets the *Vertical Refresh*
+* bit4 `ILI9341_MADCTL_ML` - sets the *Vertical Refresh*
     *    0=Top-Bottom
     *    1=Bottom-Top
-* bit5 sets the *Row/Column exchange*
+* bit5 `ILI9341_MADCTL_MV` - sets the *Row/Column exchange*
     *    0=Normal
     *    1=Reverse
-* bit6 sets the *Column Order*
+* bit6 `ILI9341_MADCTL_MX` - sets the *Column Order*
     *    0=Left-Right
     *    1=Right-Left
-* bit7 sets the *Row Order*
+* bit7 `ILI9341_MADCTL_MY` - sets the *Row Order*
     *    0=Top-Bottom
     *    1=Bottom-Top
 
