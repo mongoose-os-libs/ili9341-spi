@@ -136,24 +136,6 @@ static void ili9341_commandList(const uint8_t *addr) {
   }
 }
 
-static void ili9341_set_orientation(uint8_t flags) {
-  uint8_t madctl = 0x48;
-
-  if (flags & ILI9341_FLIP_X) {
-    madctl &= ~(1 << 6);
-  }
-
-  if (flags & ILI9341_FLIP_Y) {
-    madctl |= 1 << 7;
-  }
-
-  if (flags & ILI9341_SWITCH_XY) {
-    madctl |= 1 << 5;
-  }
-  ili9341_spi_write8_cmd(ILI9341_MADCTL);
-  ili9341_spi_write8(madctl);
-}
-
 static void ili9341_set_clip(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
   ili9341_spi_write8_cmd(ILI9341_CASET); // Column addr set
   ili9341_spi_write8(x0 >> 8);
@@ -291,30 +273,45 @@ void mgos_ili9341_set_dimensions(uint16_t width, uint16_t height) {
 }
 
 void mgos_ili9341_set_rotation(enum mgos_ili9341_rotation_t rotation) {
+  uint8_t madctl;
+  uint16_t w=mgos_ili9341_get_screenWidth();
+  uint16_t h=mgos_ili9341_get_screenHeight();
+
   switch (rotation) {
   case ILI9341_LANDSCAPE:
-    ili9341_set_orientation(ILI9341_SWITCH_XY | ILI9341_FLIP_X);
-    mgos_ili9341_set_dimensions(mgos_ili9341_get_screenWidth(), mgos_ili9341_get_screenHeight());
-    mgos_ili9341_set_window(0, 0, mgos_ili9341_get_screenWidth() - 1, mgos_ili9341_get_screenHeight() - 1);
+    madctl = (ILI9341_MADCTL_MX | ILI9341_MADCTL_MY | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR);
+    if (w>h)
+      mgos_ili9341_set_dimensions(w,h);
+    else
+      mgos_ili9341_set_dimensions(h,w);
     break;
 
   case ILI9341_LANDSCAPE_FLIP:
-    ili9341_set_orientation(ILI9341_SWITCH_XY);
-    mgos_ili9341_set_dimensions(mgos_ili9341_get_screenWidth(), mgos_ili9341_get_screenHeight());
-    mgos_ili9341_set_window(0, 0, mgos_ili9341_get_screenWidth() - 1, mgos_ili9341_get_screenHeight() - 1);
+    madctl = (ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR);
+    if (w>h)
+      mgos_ili9341_set_dimensions(w,h);
+    else
+      mgos_ili9341_set_dimensions(h,w);
     break;
 
   case ILI9341_PORTRAIT_FLIP:
-    ili9341_set_orientation(ILI9341_FLIP_X);
-    mgos_ili9341_set_dimensions(mgos_ili9341_get_screenHeight(), mgos_ili9341_get_screenWidth());
-    mgos_ili9341_set_window(0, 0, mgos_ili9341_get_screenWidth() - 1, mgos_ili9341_get_screenHeight() - 1);
+    madctl = (ILI9341_MADCTL_MY | ILI9341_MADCTL_BGR);
+    if (h>w)
+      mgos_ili9341_set_dimensions(w,h);
+    else
+      mgos_ili9341_set_dimensions(h,w);
     break;
 
   default:   // ILI9331_PORTRAIT
-    ili9341_set_orientation(0);
-    mgos_ili9341_set_dimensions(mgos_ili9341_get_screenHeight(), mgos_ili9341_get_screenWidth());
-    mgos_ili9341_set_window(0, 0, mgos_ili9341_get_screenWidth() - 1, mgos_ili9341_get_screenHeight() - 1);
+    madctl = (ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR);
+    if (h>w)
+      mgos_ili9341_set_dimensions(w,h);
+    else
+      mgos_ili9341_set_dimensions(h,w);
   }
+  ili9341_spi_write8_cmd(ILI9341_MADCTL);
+  ili9341_spi_write8(madctl);
+  mgos_ili9341_set_window(0, 0, mgos_ili9341_get_screenWidth() - 1, mgos_ili9341_get_screenHeight() - 1);
   return;
 }
 

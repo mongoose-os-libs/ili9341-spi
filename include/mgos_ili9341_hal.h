@@ -21,9 +21,14 @@
 #include "mgos_spi.h"
 
 // ILI9341 Display orientation bits
-#define ILI9341_FLIP_X         0x01
-#define ILI9341_FLIP_Y         0x02
-#define ILI9341_SWITCH_XY      0x04
+#define ILI9341_MADCTL_MY  0x80     // Bottom to top
+#define ILI9341_MADCTL_MX  0x40     // Right to left
+#define ILI9341_MADCTL_MV  0x20     // Reverse Mode
+#define ILI9341_MADCTL_ML  0x10     // LCD refresh Bottom to top
+#define ILI9341_MADCTL_RGB 0x00     // Red-Green-Blue pixel order
+#define ILI9341_MADCTL_BGR 0x08     // Blue-Green-Red pixel order
+#define ILI9341_MADCTL_MH  0x04     // LCD refresh right to left
+
 
 // ILI9341 Commands
 #define ILI9341_NOP            0x00
