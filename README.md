@@ -41,26 +41,20 @@ foreground color to it.
 
 ### Orientations
 
+```c
+void mgos_ili9341_set_orientation(uint8_t madctl, uint16_t rows, uint16_t cols);
+```
+
 Depending on how the hardware manufacturer connected the LCD panel to the
 `ILI9341` chip, several registers are provided to determine the true
 orientation of the screen. From the datasheet, there are 5 bits which determine
 that orientation, in the `MADCTL` register, as follows:
 
-* bit2 `ILI9341_MADCTL_MH` - sets the *Horizontal Refresh*
-    *    0=Left-Right
-    *    1=Right-Left
-* bit4 `ILI9341_MADCTL_ML` - sets the *Vertical Refresh*
-    *    0=Top-Bottom
-    *    1=Bottom-Top
-* bit5 `ILI9341_MADCTL_MV` - sets the *Row/Column exchange*
-    *    0=Normal
-    *    1=Reverse
-* bit6 `ILI9341_MADCTL_MX` - sets the *Column Order*
-    *    0=Left-Right
-    *    1=Right-Left
-* bit7 `ILI9341_MADCTL_MY` - sets the *Row Order*
-    *    0=Top-Bottom
-    *    1=Bottom-Top
+* bit2 `ILI9341_MADCTL_MH` - sets the *Horizontal Refresh*, 0=Left-Right and 1=Right-Left
+* bit4 `ILI9341_MADCTL_ML` - sets the *Vertical Refresh*, 0=Top-Bottom and 1=Bottom-Top
+* bit5 `ILI9341_MADCTL_MV` - sets the *Row/Column Swap*,  0=Normal and 1=Swapped
+* bit6 `ILI9341_MADCTL_MX` - sets the *Column Order*, 0=Left-Right and 1=Right-Left
+* bit7 `ILI9341_MADCTL_MY` - sets the *Row Order*, 0=Top-Bottom and 1=Bottom-Top
 
 This bits are defined as `ILI9341_MADCTL_*` in `mgos_ili9341.h` header file.
 By means of example, here's a definition for Adafruit panels:
