@@ -28,5 +28,6 @@ tags:
   - c
   - spi
   - hw
+  - docs:drivers:ILI9341 SPI
 
 manifest_version: 2017-09-29
