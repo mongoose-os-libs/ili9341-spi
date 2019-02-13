@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef __MGOS_ILI9341_H
-#define __MGOS_ILI9341_H
+#pragma once
 
 #include "mgos.h"
 #include "mgos_ili9341_font.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Color definitions for RGB in 565-format
 #define ILI9341_BLACK          0x0000   /*   0,   0,   0 */
@@ -106,4 +109,6 @@ uint16_t mgos_ili9341_line(int n);
 // Images
 void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn);
 
-#endif // __MGOS_ILI9341_H
+#ifdef __cplusplus
+}
+#endif
