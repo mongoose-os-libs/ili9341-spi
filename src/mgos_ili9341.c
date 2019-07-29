@@ -525,8 +525,9 @@ void mgos_ili9341_drawDIF(uint16_t x0, uint16_t y0, char *fn) {
   int       fd;
 
   fd = open(fn, O_RDONLY);
-  if (!fd) {
-    LOG(LL_ERROR, ("%s: Could not opens", fn));
+   // has to be tested not only for NULL
+  if (fd < 0) {
+    LOG(LL_ERROR, ("%s: Could not open", fn));
     goto exit;
   }
   if (16 != read(fd, dif_hdr, 16)) {
