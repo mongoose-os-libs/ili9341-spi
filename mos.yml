@@ -22,7 +22,7 @@ config_schema:
   - ["ili9341.height", "i", 240, {title: "TFT height in pixels"}]
 
 libs:
-  - origin: https://github.com/mongoose-os-libs/spi
+  - location: https://github.com/mongoose-os-libs/spi
 
 tags:
   - c
